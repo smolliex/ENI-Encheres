@@ -15,7 +15,7 @@ public class ArticleVendu implements Serializable{
 	private int prix_initial;
 	private int prix_vente;
 	private Utilisateur vendeur;
-	private Categorie categorie;
+	private Categorie categorie; 
 	
 	public ArticleVendu() {
 	}

@@ -75,23 +75,35 @@ public class UtilisateurManager {
 	}
 	
 	private void validerNom (String nom, BusinessException businessException) {
-		if(nom==null || nom.trim().length() <1 || nom.length()>30)
+		if(nom==null)
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_NOM_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_NOM_MANQUANT);
+		}
+		if(nom.length()>30)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_NOM_LONG);
 		}
 	}
 	
 	private void validerPrenom (String prenom, BusinessException businessException) {
-		if(prenom==null || prenom.trim().length() <1 || prenom.length()>30)
+		if(prenom.length()>30)
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PRENOM_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PRENOM_MANQUANT);
+		}
+		if(prenom.length()>30)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PRENOM_LONG);
 		}
 	}
 	
 	private void validerEmail (String email, BusinessException businessException) throws BusinessException {
-		if(email==null || email.length()>20)
+		if(email==null)
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_MANQUANT);
+		}
+		if(email.length()>200)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_LONG);
 		}
 		List<Utilisateur>utilisateurs = new ArrayList<Utilisateur>();
 		utilisateurs = utilisateurDAO.selectAll();
@@ -104,9 +116,17 @@ public class UtilisateurManager {
 	}
 	
 	private void validerPseudo (String pseudo, BusinessException businessException) throws BusinessException {
-		if(pseudo==null || pseudo.length()>30 ||!pseudo.matches("[A-Za-z0-9]*"))
+		if(pseudo==null || pseudo.trim().length() <1)
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_MANQUANT);
+		}
+		if(pseudo.length()>30)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_LONG);
+		}
+		if(!pseudo.matches("[A-Za-z0-9]*"))
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_CARACTERE_NON_AUTORISE);
 		}
 		List<Utilisateur>utilisateurs = new ArrayList<Utilisateur>();
 		utilisateurs = utilisateurDAO.selectAll();
@@ -119,16 +139,24 @@ public class UtilisateurManager {
 	}
 	
 	private void validerTelephone (String telephone, BusinessException businessException) throws BusinessException {
-		if(telephone.length() >15 || !telephone.matches("[0-9]*")) 
+		if(telephone.length() >15) 
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_TELEPHONE_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_TELEPHONE_LONG);
+		}
+		if(!telephone.matches("[0-9]*")) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_TELEPHONE_CARACTERE_NON_AUTORISE);
 		}
 	}
 	
 	private void validerRue (String rue, BusinessException businessException) throws BusinessException {
-		if(rue.length() >30 || rue == null || rue.trim().length() < 1) 
+		if(rue == null || rue.trim().length() < 1) 
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_RUE_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_RUE_MANQUANT);
+		}
+		if(rue.length() >30) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_RUE_LONG);
 		}
 	}
 	
@@ -140,16 +168,24 @@ public class UtilisateurManager {
 	}
 	
 	private void validerVille (String ville, BusinessException businessException) throws BusinessException {
-		if(ville.length() >30 || ville == null) 
+		if(ville == null) 
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_VILLE_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_VILLE_MANQUANT);
+		}
+		if(ville.length() >30) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_VILLE_LONG);
 		}
 	}
 	
 	private void validerMotDePasse (String mdp, BusinessException businessException) throws BusinessException {
-		if(mdp.length() >30 || mdp == null) 
+		if(mdp == null) 
 		{
-			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_MOT_DE_PASSE_ERREUR);
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_MOT_DE_PASSE_MANQUANT);
+		}
+		if(mdp.length() >30) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_MOT_DE_PASSE_LONG);
 		}
 	}
 	

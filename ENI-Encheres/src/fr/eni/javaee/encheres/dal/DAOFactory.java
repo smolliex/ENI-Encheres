@@ -1,29 +1,25 @@
 package fr.eni.javaee.encheres.dal;
 
 import fr.eni.javaee.encheres.dal.UtilisateurDAO;
+import fr.eni.javaee.encheres.dal.jdbc.ArticleVenduDAOJdbcImpl;
+import fr.eni.javaee.encheres.dal.jdbc.CategorieDAOJdbcImpl;
+import fr.eni.javaee.encheres.dal.jdbc.UtilisateurDAOJdbcImpl;
 
 public class DAOFactory {
 	
-	public static UtilisateurDAO getUtilisateurDAO() {
-		UtilisateurDAO utilisateurDAO = null;
-		try {
-			utilisateurDAO = (UtilisateurDAO) Class.forName("fr.eni.javaee.encheres.dal.UtilisateurDAOJdbcImpl").newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return utilisateurDAO;
-		
+	public static UtilisateurDAO getUtilisateurDAO() 
+	{
+		return new UtilisateurDAOJdbcImpl();
 	}
 	
-	public static CategorieDAO getCategorieDAO() {
-		CategorieDAO categorieDAO = null;
-		try {
-			categorieDAO = (CategorieDAO) Class.forName("fr.eni.javaee.encheres.dal.CategorieDAOJdbcImpl").newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return categorieDAO;
-		
+	public static CategorieDAO getCategorieDAO()
+	{
+		return new CategorieDAOJdbcImpl();
 	}
-
+	
+	public static ArticleVenduDAO getArticleVenduDAO()
+	{
+		return new ArticleVenduDAOJdbcImpl();
+	}
+	
 }

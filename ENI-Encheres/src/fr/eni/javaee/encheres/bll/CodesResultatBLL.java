@@ -13,6 +13,11 @@ public abstract class CodesResultatBLL {
 	public static final int REGLE_ARTICLE_DATE_PASSEE = 20025;
 	public static final int REGLE_ARTICLE_DATE_INCOHERENTE = 20026;
 	public static final int REGLE_ARTICLE_PRIX_INITIAL = 20027;
+	public static final int REGLE_ARTICLE_PRIX_VENTE = 20028;
+	public static final int REGLE_ARTICLE_CATEGORIE_MANQUANTE = 20029;
+	public static final int REGLE_ARTICLE_CATEGORIE_INCONNUE = 20030;
+	public static final int REGLE_ARTICLE_VENDEUR_MANQUANT = 20031;
+	public static final int REGLE_ARTICLE_VENDEUR_INCONNU = 20032;
 	
 	/******* CATEGORIE *******/
 	public static final int REGLE_CATEGORIE_LIBELLE_MANQUANT = 20081;

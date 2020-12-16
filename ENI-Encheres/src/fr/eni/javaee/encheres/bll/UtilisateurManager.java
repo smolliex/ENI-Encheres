@@ -26,10 +26,7 @@ public class UtilisateurManager {
 	
 	public void ajouterUtilisateur(Utilisateur utilisateur) throws BusinessException {
 		BusinessException businessException = new BusinessException();
-		this.validerNomUtilisateur(utilisateur.getNom(), businessException);
-		this.validerPrenomUtilisateur(utilisateur.getPrenom(), businessException);
-		this.validerEmail(utilisateur.getEmail(), businessException);
-		this.validerPseudo(utilisateur.getPseudo(), businessException);
+		this.validerUtilisateur(utilisateur, businessException);
 		if(!businessException.hasErreurs()) {
 			this.utilisateurDAO.insert(utilisateur);
 		}
@@ -38,29 +35,61 @@ public class UtilisateurManager {
 			throw businessException;
 		}
 	}
-		
+	
+	public void modifierUtilisateur(Utilisateur utilisateur) throws BusinessException {
+		BusinessException businessException = new BusinessException();
+		this.validerUtilisateur(utilisateur, businessException);
+		if(!businessException.hasErreurs()) {
+			this.utilisateurDAO.update(utilisateur);
+		}
+		else
+		{
+			throw businessException;
+		}
+	}
+	
+	public void supprimerUtilisateur(int id) throws BusinessException {
+		this.utilisateurDAO.delete(id);
+	}
+	
 	public List<Utilisateur> getListeUtilisateurs(List<Utilisateur> utilisateurs) throws BusinessException {
 		return this.utilisateurDAO.selectAll();
 	}
 	
+	public Utilisateur getUtilisateur(int no_utilisateur) throws BusinessException {
+		return utilisateurDAO.selectById(no_utilisateur);
+		}
 	
 	
-	private void validerNomUtilisateur (String nomUtilisateur, BusinessException businessException) {
-		if(nomUtilisateur==null || nomUtilisateur.trim().length()>50)
+	
+	private void validerUtilisateur (Utilisateur utilisateur, BusinessException businessException) throws BusinessException {
+		this.validerNom(utilisateur.getNom(), businessException);
+		this.validerPrenom(utilisateur.getPrenom(), businessException);
+		this.validerEmail(utilisateur.getEmail(), businessException);
+		this.validerPseudo(utilisateur.getPseudo(), businessException);
+		this.validerTelephone(utilisateur.getPseudo(), businessException);
+		this.validerRue(utilisateur.getPseudo(), businessException);
+		this.validerCodePostal(utilisateur.getPseudo(), businessException);
+		this.validerVille(utilisateur.getPseudo(), businessException);
+		this.validerMotDePasse(utilisateur.getPseudo(), businessException);
+	}
+	
+	private void validerNom (String nom, BusinessException businessException) {
+		if(nom==null || nom.trim().length() <1 || nom.length()>30)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_NOM_ERREUR);
 		}
 	}
 	
-	private void validerPrenomUtilisateur (String prenomUtilisateur, BusinessException businessException) {
-		if(prenomUtilisateur==null || prenomUtilisateur.trim().length()>50)
+	private void validerPrenom (String prenom, BusinessException businessException) {
+		if(prenom==null || prenom.trim().length() <1 || prenom.length()>30)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PRENOM_ERREUR);
 		}
 	}
 	
 	private void validerEmail (String email, BusinessException businessException) throws BusinessException {
-		if(email==null || email.trim().length()>100)
+		if(email==null || email.length()>20)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_ERREUR);
 		}
@@ -75,7 +104,7 @@ public class UtilisateurManager {
 	}
 	
 	private void validerPseudo (String pseudo, BusinessException businessException) throws BusinessException {
-		if(pseudo==null || pseudo.trim().length()>30)
+		if(pseudo==null || pseudo.length()>30 ||!pseudo.matches("[A-Za-z0-9]*"))
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_ERREUR);
 		}
@@ -86,6 +115,41 @@ public class UtilisateurManager {
 				businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_DOUBLON);
 				break;
 			}
+		}
+	}
+	
+	private void validerTelephone (String telephone, BusinessException businessException) throws BusinessException {
+		if(telephone.length() >15 || !telephone.matches("[0-9]*")) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_TELEPHONE_ERREUR);
+		}
+	}
+	
+	private void validerRue (String rue, BusinessException businessException) throws BusinessException {
+		if(rue.length() >30 || rue == null || rue.trim().length() < 1) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_RUE_ERREUR);
+		}
+	}
+	
+	private void validerCodePostal (String codePostal, BusinessException businessException) throws BusinessException {
+		if(codePostal.trim().length() >5 || codePostal == null || !codePostal.matches("[0-9]*")) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_CODE_POSTAL_ERREUR);
+		}
+	}
+	
+	private void validerVille (String ville, BusinessException businessException) throws BusinessException {
+		if(ville.length() >30 || ville == null) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_VILLE_ERREUR);
+		}
+	}
+	
+	private void validerMotDePasse (String mdp, BusinessException businessException) throws BusinessException {
+		if(mdp.length() >30 || mdp == null) 
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_MOT_DE_PASSE_ERREUR);
 		}
 	}
 	

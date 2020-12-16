@@ -15,7 +15,7 @@ public class DAOFactory {
 		
 	}
 	
-	public static CategorieDAO getCAtegorieDAO() {
+	public static CategorieDAO getCategorieDAO() {
 		CategorieDAO categorieDAO = null;
 		try {
 			categorieDAO = (CategorieDAO) Class.forName("fr.eni.javaee.encheres.dal.CategorieDAOJdbcImpl").newInstance();

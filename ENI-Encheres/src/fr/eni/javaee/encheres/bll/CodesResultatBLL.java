@@ -35,6 +35,16 @@ public abstract class CodesResultatBLL {
 	 * L'adresse email fait doublon 
 	 */
 	public static final int REGLE_UTILISATEUR_PSEUDO_DOUBLON = 20005;
+
+	public static final int REGLE_UTILISATEUR_TELEPHONE_ERREUR = 0;
+
+	public static final int REGLE_UTILISATEUR_RUE_ERREUR = 0;
+
+	public static final int REGLE_UTILISATEUR_CODE_POSTAL_ERREUR = 0;
+
+	public static final int REGLE_UTILISATEUR_VILLE_ERREUR = 0;
+
+	public static final int REGLE_UTILISATEUR_MOT_DE_PASSE_ERREUR = 0;
 	
 	
 	

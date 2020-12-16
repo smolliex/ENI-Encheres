@@ -15,9 +15,9 @@ import fr.eni.javaee.encheres.bo.Utilisateur;
 
 public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 	
-	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe) "
-														+ "VALUES (pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?)";
-	private static final String UPDATE = "UPDATE UTILISATEURS SET (pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?) "
+	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) "
+														+ "VALUES (pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?, credit=?, administrateur=?)";
+	private static final String UPDATE = "UPDATE UTILISATEURS SET (pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?, credit=?, administrateur=?) "
 														+ "WHERE no_utilisateur=?";
 	private static final String DELETE = "DELETE FROM UTILISATEURS WHERE no_utilisateur=?";
 	private static final String SELECT_BY_ID = "SELECT (no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) "
@@ -48,6 +48,8 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 			pstmt.setString(7, utilisateur.getCode_postal());
 			pstmt.setString(8, utilisateur.getVille());
 			pstmt.setString(9, utilisateur.getMot_de_passe());
+			pstmt.setInt(10, utilisateur.getCredit());
+			pstmt.setBoolean(11, utilisateur.isAdministrateur());
 			pstmt.executeUpdate();
 			rs = pstmt.getGeneratedKeys();
 			if(rs.next())
@@ -101,7 +103,9 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 			pstmt.setString(7, utilisateur.getCode_postal());
 			pstmt.setString(8, utilisateur.getVille());
 			pstmt.setString(9, utilisateur.getMot_de_passe());
-			pstmt.setInt(10, utilisateur.getNo_utilisateur());
+			pstmt.setInt(10, utilisateur.getCredit());
+			pstmt.setBoolean(11, utilisateur.isAdministrateur());
+			pstmt.setInt(11, utilisateur.getNo_utilisateur());
 			pstmt.executeUpdate();
 		}
 		catch(Exception e)

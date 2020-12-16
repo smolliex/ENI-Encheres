@@ -1,4 +1,4 @@
-package fr.eni.javaee.encheres.bll;
+package fr.eni.javaee.encheres.messages;
 
 
 import java.util.ArrayList;

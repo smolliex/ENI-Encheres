@@ -28,12 +28,26 @@ public abstract class CodesResultatDAL {
 	/**
 	 * Echec général quand erreur non gérée à la suppression 
 	 */
-	public static final int SUPPRESSION_UTILISATEUR_ECHEC = 10004;
+	public static final int DELETE_UTILISATEUR_ECHEC = 10004;
 	
 	/**
 	 * Echec général quand erreur non gérée à la selection 
 	 */
 	public static final int SELECT_UTILISATEUR_ECHEC = 10005;
+	
+	
+
+	public static final int SELECT_CATEGORIE_ECHEC = 10080;
+
+	public static final int UPDATE_CATEGORIE_NULL = 10081;
+
+	public static final int UPDATE_CATEGORIE_ECHEC = 10082;
+
+	public static final int DELETE_CATEGORIE_ECHEC = 10083;
+
+	public static final int INSERT_CATEGORIE_NULL = 10084;
+
+	public static final int INSERT_CATEGORIE_ECHEC = 10085;
 
 
 

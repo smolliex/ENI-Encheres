@@ -27,7 +27,8 @@ public class UtilisateurManager {
 	public void ajouterUtilisateur(Utilisateur utilisateur) throws BusinessException {
 		BusinessException businessException = new BusinessException();
 		this.validerUtilisateur(utilisateur, businessException);
-		if(!businessException.hasErreurs()) {
+		if(!businessException.hasErreurs()) 
+		{
 			this.utilisateurDAO.insert(utilisateur);
 		}
 		else
@@ -39,7 +40,8 @@ public class UtilisateurManager {
 	public void modifierUtilisateur(Utilisateur utilisateur) throws BusinessException {
 		BusinessException businessException = new BusinessException();
 		this.validerUtilisateur(utilisateur, businessException);
-		if(!businessException.hasErreurs()) {
+		if(!businessException.hasErreurs()) 
+		{
 			this.utilisateurDAO.update(utilisateur);
 		}
 		else
@@ -67,11 +69,11 @@ public class UtilisateurManager {
 		this.validerPrenom(utilisateur.getPrenom(), businessException);
 		this.validerEmail(utilisateur.getEmail(), businessException);
 		this.validerPseudo(utilisateur.getPseudo(), businessException);
-		this.validerTelephone(utilisateur.getPseudo(), businessException);
-		this.validerRue(utilisateur.getPseudo(), businessException);
-		this.validerCodePostal(utilisateur.getPseudo(), businessException);
-		this.validerVille(utilisateur.getPseudo(), businessException);
-		this.validerMotDePasse(utilisateur.getPseudo(), businessException);
+		this.validerTelephone(utilisateur.getTelephone(), businessException);
+		this.validerRue(utilisateur.getRue(), businessException);
+		this.validerCodePostal(utilisateur.getCode_postal(), businessException);
+		this.validerVille(utilisateur.getVille(), businessException);
+		this.validerMotDePasse(utilisateur.getMot_de_passe(), businessException);
 	}
 	
 	private void validerNom (String nom, BusinessException businessException) {
@@ -79,7 +81,7 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_NOM_MANQUANT);
 		}
-		if(nom.length()>30)
+		else if(nom.length()>30)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_NOM_LONG);
 		}
@@ -90,7 +92,7 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PRENOM_MANQUANT);
 		}
-		if(prenom.length()>30)
+		else if(prenom.length()>30)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PRENOM_LONG);
 		}
@@ -101,7 +103,7 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_MANQUANT);
 		}
-		if(email.length()>200)
+		else if(email.length()>200)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_LONG);
 		}
@@ -120,11 +122,11 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_MANQUANT);
 		}
-		if(pseudo.length()>30)
+		else if(pseudo.length()>30)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_LONG);
 		}
-		if(!pseudo.matches("[A-Za-z0-9]*"))
+		else if(!pseudo.matches("[A-Za-z0-9]*"))
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_CARACTERE_NON_AUTORISE);
 		}
@@ -143,7 +145,7 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_TELEPHONE_LONG);
 		}
-		if(!telephone.matches("[0-9]*")) 
+		else if(!telephone.matches("[0-9]*")) 
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_TELEPHONE_CARACTERE_NON_AUTORISE);
 		}
@@ -154,7 +156,7 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_RUE_MANQUANT);
 		}
-		if(rue.length() >30) 
+		else if(rue.length() >30) 
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_RUE_LONG);
 		}
@@ -172,7 +174,7 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_VILLE_MANQUANT);
 		}
-		if(ville.length() >30) 
+		else if(ville.length() >30) 
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_VILLE_LONG);
 		}
@@ -183,7 +185,7 @@ public class UtilisateurManager {
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_MOT_DE_PASSE_MANQUANT);
 		}
-		if(mdp.length() >30) 
+		else if(mdp.length() >30) 
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_MOT_DE_PASSE_LONG);
 		}

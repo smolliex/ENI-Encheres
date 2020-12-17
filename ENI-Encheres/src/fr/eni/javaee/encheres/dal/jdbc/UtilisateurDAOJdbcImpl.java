@@ -6,14 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import fr.eni.javaee.encheres.dal.CodesResultatDAL;
 import fr.eni.javaee.encheres.dal.UtilisateurDAO;
 import fr.eni.javaee.encheres.dal.jdbc.ConnectionProvider;
 import fr.eni.javaee.encheres.messages.BusinessException;
+import fr.eni.javaee.encheres.utils.ErrorLogger;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 
 public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
+	
+	private static Logger logger = ErrorLogger.getLogger("UtilisateurDAOJdbcImpl");
 	
 	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?, credit=?, administrateur=? "
@@ -58,6 +62,7 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			logger.severe(e.getMessage());
 			BusinessException businessException = new BusinessException();
 			businessException.ajouterErreur(CodesResultatDAL.INSERT_UTILISATEUR_ECHEC);
 			throw businessException;
@@ -73,6 +78,7 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			logger.severe(e.getMessage());
 			BusinessException businessException = new BusinessException();
 			businessException.ajouterErreur(CodesResultatDAL.DELETE_UTILISATEUR_ECHEC);
 			throw businessException;
@@ -109,6 +115,7 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			logger.severe(e.getMessage());
 			BusinessException businessException = new BusinessException();
 			businessException.ajouterErreur(CodesResultatDAL.UPDATE_UTILISATEUR_ECHEC);
 			throw businessException;
@@ -145,6 +152,7 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			logger.severe(e.getMessage());
 			BusinessException businessException = new BusinessException();
 			businessException.ajouterErreur(CodesResultatDAL.SELECT_UTILISATEUR_ECHEC);
 			throw businessException;
@@ -181,6 +189,7 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			logger.severe(e.getMessage());
 			BusinessException businessException = new BusinessException();
 			businessException.ajouterErreur(CodesResultatDAL.SELECT_UTILISATEUR_ECHEC);
 			throw businessException;

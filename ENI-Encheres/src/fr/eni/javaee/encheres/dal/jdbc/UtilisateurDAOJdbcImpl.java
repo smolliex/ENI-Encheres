@@ -15,14 +15,12 @@ import fr.eni.javaee.encheres.bo.Utilisateur;
 
 public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 	
-	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) "
-														+ "VALUES (pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?, credit=?, administrateur=?)";
-	private static final String UPDATE = "UPDATE UTILISATEURS SET (pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?, credit=?, administrateur=?) "
+	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo=?, nom=?, prenom=?, email=?, telephone=?, rue=?, code_postal=?, ville=?, mot_de_passe=?, credit=?, administrateur=? "
 														+ "WHERE no_utilisateur=?";
 	private static final String DELETE = "DELETE FROM UTILISATEURS WHERE no_utilisateur=?";
-	private static final String SELECT_BY_ID = "SELECT (no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) "
-														+ "FROM UTILISATEURS WHERE no_utilisateur=?";
-	private static final String SELECT_ALL = "SELECT (no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) FROM UTILISATEURS";
+	private static final String SELECT_BY_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur=?";
+	private static final String SELECT_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS ORDER BY nom, prenom";
 
 	
 
@@ -105,7 +103,7 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 			pstmt.setString(9, utilisateur.getMot_de_passe());
 			pstmt.setInt(10, utilisateur.getCredit());
 			pstmt.setBoolean(11, utilisateur.isAdministrateur());
-			pstmt.setInt(11, utilisateur.getNo_utilisateur());
+			pstmt.setInt(12, utilisateur.getNo_utilisateur());
 			pstmt.executeUpdate();
 		}
 		catch(Exception e)
@@ -127,19 +125,22 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 			PreparedStatement pstmt = cnx.prepareStatement(SELECT_BY_ID);
 			pstmt.setInt(1, id);
 			ResultSet rs = pstmt.executeQuery();
-			utilisateur.setNo_utilisateur(rs.getInt("no_utilisateur"));
-			utilisateur.setPseudo(rs.getString("pseudo"));
-			utilisateur.setNom(rs.getString("nom"));
-			utilisateur.setPrenom(rs.getString("prenom"));
-			utilisateur.setEmail(rs.getString("email"));
-			utilisateur.setTelephone(rs.getString("telephone"));
-			utilisateur.setRue(rs.getString("rue"));
-			utilisateur.setCode_postal(rs.getString("code_postal"));
-			utilisateur.setVille(rs.getString("ville"));
-			utilisateur.setPseudo(rs.getString("pseudo"));
-			utilisateur.setMot_de_passe(rs.getString("mot_de_passe"));
-			utilisateur.setCredit(rs.getInt("credit"));
-			utilisateur.setAdministrateur(rs.getBoolean("administrateur"));
+			if(rs.next()) {
+				utilisateur.setNo_utilisateur(rs.getInt("no_utilisateur"));
+				utilisateur.setPseudo(rs.getString("pseudo"));
+				utilisateur.setNom(rs.getString("nom"));
+				utilisateur.setPrenom(rs.getString("prenom"));
+				utilisateur.setEmail(rs.getString("email"));
+				utilisateur.setTelephone(rs.getString("telephone"));
+				utilisateur.setRue(rs.getString("rue"));
+				utilisateur.setCode_postal(rs.getString("code_postal"));
+				utilisateur.setVille(rs.getString("ville"));
+				utilisateur.setPseudo(rs.getString("pseudo"));
+				utilisateur.setMot_de_passe(rs.getString("mot_de_passe"));
+				utilisateur.setCredit(rs.getInt("credit"));
+				utilisateur.setAdministrateur(rs.getBoolean("administrateur"));
+			}
+			
 		}
 		catch(Exception e)
 		{

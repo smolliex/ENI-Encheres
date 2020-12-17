@@ -22,7 +22,7 @@ public class CategorieManager {
 		}
 		return instance;
 	}
-	
+
 	public List<Categorie> getListeCategories() throws BusinessException {
 		return DAOCategorie.selectAll();
 	}

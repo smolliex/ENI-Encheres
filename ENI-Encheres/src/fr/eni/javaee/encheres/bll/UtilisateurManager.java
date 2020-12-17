@@ -13,7 +13,7 @@ public class UtilisateurManager {
 	private UtilisateurDAO utilisateurDAO;
 	private static UtilisateurManager instance;
 	
-	private UtilisateurManager() {
+	public UtilisateurManager() {
 		this.utilisateurDAO = DAOFactory.getUtilisateurDAO();
 	}
 	
@@ -26,7 +26,7 @@ public class UtilisateurManager {
 	
 	public void ajouterUtilisateur(Utilisateur utilisateur) throws BusinessException {
 		BusinessException businessException = new BusinessException();
-		this.validerUtilisateur(utilisateur, businessException);
+		this.validerUtilisateurInsertion(utilisateur, businessException);
 		if(!businessException.hasErreurs()) 
 		{
 			this.utilisateurDAO.insert(utilisateur);
@@ -39,7 +39,7 @@ public class UtilisateurManager {
 	
 	public void modifierUtilisateur(Utilisateur utilisateur) throws BusinessException {
 		BusinessException businessException = new BusinessException();
-		this.validerUtilisateur(utilisateur, businessException);
+		this.validerUtilisateurModification(utilisateur, businessException);
 		if(!businessException.hasErreurs()) 
 		{
 			this.utilisateurDAO.update(utilisateur);
@@ -54,7 +54,7 @@ public class UtilisateurManager {
 		this.utilisateurDAO.delete(id);
 	}
 	
-	public List<Utilisateur> getListeUtilisateurs(List<Utilisateur> utilisateurs) throws BusinessException {
+	public List<Utilisateur> getListeUtilisateurs() throws BusinessException {
 		return this.utilisateurDAO.selectAll();
 	}
 	
@@ -64,11 +64,23 @@ public class UtilisateurManager {
 	
 	
 	
-	private void validerUtilisateur (Utilisateur utilisateur, BusinessException businessException) throws BusinessException {
+	private void validerUtilisateurInsertion (Utilisateur utilisateur, BusinessException businessException) throws BusinessException {
 		this.validerNom(utilisateur.getNom(), businessException);
 		this.validerPrenom(utilisateur.getPrenom(), businessException);
-		this.validerEmail(utilisateur.getEmail(), businessException);
-		this.validerPseudo(utilisateur.getPseudo(), businessException);
+		this.validerEmailInsertion(utilisateur.getEmail(), businessException);
+		this.validerPseudoInsertion(utilisateur.getPseudo(), businessException);
+		this.validerTelephone(utilisateur.getTelephone(), businessException);
+		this.validerRue(utilisateur.getRue(), businessException);
+		this.validerCodePostal(utilisateur.getCode_postal(), businessException);
+		this.validerVille(utilisateur.getVille(), businessException);
+		this.validerMotDePasse(utilisateur.getMot_de_passe(), businessException);
+	}
+	
+	private void validerUtilisateurModification (Utilisateur utilisateur, BusinessException businessException) throws BusinessException {
+		this.validerNom(utilisateur.getNom(), businessException);
+		this.validerPrenom(utilisateur.getPrenom(), businessException);
+		this.validerEmailModification(utilisateur.getEmail(), businessException);
+		this.validerPseudoModification(utilisateur.getPseudo(), businessException);
 		this.validerTelephone(utilisateur.getTelephone(), businessException);
 		this.validerRue(utilisateur.getRue(), businessException);
 		this.validerCodePostal(utilisateur.getCode_postal(), businessException);
@@ -98,7 +110,7 @@ public class UtilisateurManager {
 		}
 	}
 	
-	private void validerEmail (String email, BusinessException businessException) throws BusinessException {
+	private void validerEmailInsertion (String email, BusinessException businessException) throws BusinessException {
 		if(email==null)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_MANQUANT);
@@ -117,7 +129,7 @@ public class UtilisateurManager {
 		}
 	}
 	
-	private void validerPseudo (String pseudo, BusinessException businessException) throws BusinessException {
+	private void validerPseudoInsertion (String pseudo, BusinessException businessException) throws BusinessException {
 		if(pseudo==null || pseudo.trim().length() <1)
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_MANQUANT);
@@ -137,6 +149,32 @@ public class UtilisateurManager {
 				businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_DOUBLON);
 				break;
 			}
+		}
+	}
+	
+	private void validerEmailModification (String email, BusinessException businessException) throws BusinessException {
+		if(email==null)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_MANQUANT);
+		}
+		else if(email.length()>200)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_EMAIL_LONG);
+		}
+	}
+	
+	private void validerPseudoModification (String pseudo, BusinessException businessException) throws BusinessException {
+		if(pseudo==null || pseudo.trim().length() <1)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_MANQUANT);
+		}
+		else if(pseudo.length()>30)
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_LONG);
+		}
+		else if(!pseudo.matches("[A-Za-z0-9]*"))
+		{
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_PSEUDO_CARACTERE_NON_AUTORISE);
 		}
 	}
 	

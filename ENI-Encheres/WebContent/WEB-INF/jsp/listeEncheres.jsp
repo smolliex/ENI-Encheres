@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -11,7 +14,7 @@
 	    <meta name="author" content="">
 	    <link rel="icon" href="favicon.ico">
 		<link rel="stylesheet" href="vendor/css/listeEncheres.css">
-		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap_yeti.min.css">
 		<title>Listes des enchères</title>
 	</head>
 	<body>
@@ -20,16 +23,16 @@
 	<header>
 		
 		<!-- Navigation -->
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-		  <div class="container">
-			<a class="navbar-brand" href="#">ENI Enchères</a>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary static-top">
+		  <div class="container-fluid">
+			<a class="navbar-brand" href="#" id="link-title">ENI Enchères</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 			  <ul class="navbar-nav ml-auto">
 				<li class="nav-item active">
-				  <a class="nav-link" href="#">Se connecter - S'inscrire
+				  <a class="nav-link" href="#" id="link-connect">Se connecter - S'inscrire
 					<span class="sr-only">(current)</span>
 				  </a>
 				</li>
@@ -51,7 +54,7 @@
 				<div class="col-12 col-md-6 px-md-5">
 					<h2 class="my-3">Filtres :</h2>
 					<div class="input-group flex-nowrap">
-					  <span class="input-group-text" id="addon-wrapping">?</span>
+					  <span class="input-group-text" id="addon-wrapping"><jsp:include page="../icons/loupe.html" /></span>
 					  <input type="text" class="form-control" name="article" id="article" placeholder="Le nom de l'article contient" aria-label="article" aria-describedby="addon-wrapping">
 					</div>
 					<div class="row align-items-center my-3">
@@ -59,10 +62,18 @@
 					    <label for="categorie" class="col-form-label">Catégorie :</label>
 					  </div>
 					  <div class="col-auto">
-					    <select class="form-select" aria-label="Default select example">
-						  <option value="1" selected>Cat1</option>
-						  <option value="2">Cat2</option>
-						  <option value="3">Cat3</option>
+					    <select class="form-control">
+					    <c:if test="${!empty listeCategories}">
+						    <option value="${listeCategories[0].libelle}" selected>${listeCategories[0].libelle}</option>
+						    <c:if test="${fn:length(listeCategories) > 1}">
+							    <c:forEach var="categorie" begin="1" items="${listeCategories}">
+							    	<option value="${categorie.libelle}">${categorie.libelle}</option>
+							    </c:forEach>			    
+						    </c:if>				    
+					    </c:if>
+					    <c:if test="${empty listeCategories}">
+					    	<option value="null">Pas de categories disponible</option>
+					    </c:if>
 						</select>
 					  </div>
 					</div>	
@@ -107,55 +118,44 @@
 					</div>	-->			
 				</div>
 				<div class="col-12 col-md-6 text-center m-auto">
-					<button type="submit" class="btn btn-primary btn-lg">Rechercher</button>
+					<button type="submit" class="btn btn-primary btn-lg" id="btn-rechercher">Rechercher</button>
 				</div>	
 			</form>
 			
 			<div class="row my-5 mx-md-5">
-				<div class="col-12 col-md-6 my-4">
-					<div class="card">
-						<!--Card content-->
-						<div class="card-body row">
-							<div class="col-5">
-								<img class="card-img-left" src="https://via.placeholder.com/250x150" alt="Card image cap">
+				<c:if test="${!empty listeArticlesVendus}">
+					<c:forEach var="articleVendu" items="${listeArticlesVendus}">
+						<div class="col-12 col-md-6 my-2">
+							<div class="card">
+								<!--Card content-->
+								<div class="card-body row">
+									<div class="col-md-5">
+										<img class="card-img-left img-fluid" src="https://via.placeholder.com/250x150" alt="image">
+										</div>
+									<div class="col-md-7">
+										<!--Title-->
+										<h3 class="card-title mt-2 mt-md-0"><a href="">${articleVendu.nom_article}</a></h3>
+										<!--Text-->
+										<p class="card-text">Prix: ${articleVendu.prix_initial}</p>
+										<p class="card-text">Fin de l'enchère: ${articleVendu.date_fin_encheres}</p>
+										<p class="card-text">Vendeur : <a href="">${articleVendu.vendeur.pseudo}</a></p>    
+									</div>			
 								</div>
-							<div class="col-7">
-								<!--Title-->
-								<h3 class="card-title"><a href="">PC gamer pour travailler (lien)</a></h3>
-								<!--Text-->
-								<p class="card-text">Prix: un prix</p>
-								<p class="card-text">Fin de l'enchère: une date</p>
-								<p class="card-text">Vendeur : <a href="">Vendeur (lien)</a></p>    
-							</div>			
+							</div>
 						</div>
-					</div>
-				</div>
-				<div class="col-12 col-md-6 my-4">
-					<div class="card">
-						<!--Card content-->
-						<div class="card-body row">
-							<div class="col-5">
-								<img class="card-img-left" src="https://via.placeholder.com/250x150" alt="Card image cap">
-								</div>
-							<div class="col-7">
-								<!--Title-->
-								<h3 class="card-title"><a href="">Autre article (lien)</a></h3>
-								<!--Text-->
-								<p class="card-text">Prix: un prix</p>
-								<p class="card-text">Fin de l'enchère: une date</p>
-								<p class="card-text">Vendeur : <a href="">Vendeur (lien)</a></p>    
-							</div>			
-						</div>
-					</div>					
-				</div>
+				    </c:forEach>
+				</c:if>
+				<c:if test="${empty listeArticlesVendus}">
+					<p>Pas d'articles vendus</p>
+				</c:if>
 			</div>
 	</main>
 	
 	
 			<!-- Pied de page -->
-    <footer class="py-5 bg-dark">
+    <footer class="py-5 bg-secondary">
       <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; ENI - 2020</p>
+        <p class="m-0 text-center text-black">Copyright &copy; ENI - 2020</p>
       </div>
     </footer>
 	

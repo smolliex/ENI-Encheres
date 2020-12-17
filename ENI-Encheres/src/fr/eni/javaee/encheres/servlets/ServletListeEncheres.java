@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import fr.eni.javaee.encheres.bll.ArticleVenduManager;
 import fr.eni.javaee.encheres.bll.CategorieManager;
 import fr.eni.javaee.encheres.bo.ArticleVendu;
 import fr.eni.javaee.encheres.bo.Categorie;
@@ -32,17 +33,23 @@ public class ServletListeEncheres extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		HttpSession session = request.getSession();
+		//HttpSession session = request.getSession();
 		List<Enchere> listeEncheres = new ArrayList<Enchere>();
 		List<Categorie> listeCategories = new ArrayList<Categorie>();
+		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		
 		
 		
-		/*
-		listeCategories = selectionnerToutesLesCategories();*/
+		
+		
+		listeCategories = selectionnerToutesLesCategories();
+		listeArticlesVendus = selectionnerTousLesArticlesVendus();
+		System.out.println(listeCategories);
+		System.out.println(listeArticlesVendus);
 		/*listeEncheres = selectionnerToutesLesEncheres();*/
 			
-		//request.setAttribute("listeCategories", listeCategories);
+		request.setAttribute("listeCategories", listeCategories);
+		request.setAttribute("listeArticlesVendus", listeArticlesVendus);
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/listeEncheres.jsp");
 		rd.forward(request, response);
 		
@@ -88,25 +95,29 @@ public class ServletListeEncheres extends HttpServlet {
 		List<Enchere> listeEncheres = em.selectionnerToutesLesEncheres();
 		return listeEncheres;
 	}*/
-	/*
+	
 	public List<Categorie> selectionnerToutesLesCategories(){
 			List<Categorie> listeCategories = new ArrayList<Categorie>();	
 			CategorieManager cm = CategorieManager.getInstance();
 			try {
 				listeCategories = cm.getListeCategories();
 			} catch (BusinessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		return listeCategories;
-	}*/
-	/*
-	public List<ArticleVendu> selectionnerTousLesArticlesVendusPourUnUtilisateur(int idUtilisateur){
-		ArticleVenduManager avm;
-		List<ArticleVendu> listeArticlesVendus = avm.selectionnerTousLesArticlesVendusPourUnUtilisateur(idUtilisateur);
+	}
+	
+	public List<ArticleVendu> selectionnerTousLesArticlesVendus(){
+		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
+		ArticleVenduManager avm = ArticleVenduManager.getInstance();
+		try {
+			listeArticlesVendus = avm.getListeArticlesVendu();
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		}
 		return listeArticlesVendus;
-	}*/
+	}
 	
 	
 

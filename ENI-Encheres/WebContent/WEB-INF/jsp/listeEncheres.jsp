@@ -11,7 +11,7 @@
 	    <meta name="author" content="">
 	    <link rel="icon" href="favicon.ico">
 		<link rel="stylesheet" href="vendor/css/listeEncheres.css">
-		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap_yeti.min.css">
 		<title>Listes des enchères</title>
 	</head>
 	<body>
@@ -20,7 +20,7 @@
 	<header>
 		
 		<!-- Navigation -->
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary static-top">
 		  <div class="container">
 			<a class="navbar-brand" href="#">ENI Enchères</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,9 +153,9 @@
 	
 	
 			<!-- Pied de page -->
-    <footer class="py-5 bg-dark">
+    <footer class="py-5 bg-secondary">
       <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; ENI - 2020</p>
+        <p class="m-0 text-center text-black">Copyright &copy; ENI - 2020</p>
       </div>
     </footer>
 	

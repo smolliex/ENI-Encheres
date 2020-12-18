@@ -29,51 +29,51 @@ public class ArticleVenduDAOJdbcImpl implements ArticleVenduDAO{
 	private CategorieManager categorieManager = CategorieManager.getInstance();
 	
 	private static final String SQL_SELECT_BY=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_article=?;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_article=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ALL=
 			"SELECT * FROM ARTICLES_VENDUS ORDER BY nom_article;";
 	private static final String SQL_SELECT_ALL_ENCOURS=
-			"SELECT * FROM ARTICLES_VENDUS WHERE date_debut_encheres<=? AND date_fin_encheres>=?;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE LOWER(nom_article) like ? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ALL_ENCOURS_CATEGORIE=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_categorie=? AND date_debut_encheres<=? AND date_fin_encheres>=?;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE LOWER(nom_article) like ? AND no_categorie=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ENCHERES_ENCOURS=	
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur<>? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur<>? AND LOWER(nom_article) like ? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ENCHERES_ENCOURS_CATEGORIE=	
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur<>? AND no_categorie=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur<>? AND LOWER(nom_article) like ? AND no_categorie=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ENCHERES_UTILISATEUR=
 			"SELECT a.* FROM ARTICLES_VENDUS a " + 
 			"INNER JOIN ENCHERES e on a.no_article = e.no_article " + 
-			"WHERE e.no_utilisateur=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
+			"WHERE e.no_utilisateur=? AND LOWER(nom_article) like ? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ENCHERES_UTILISATEUR_CATEGORIE=
 			"SELECT a.* FROM ARTICLES_VENDUS a " + 
 			"INNER JOIN ENCHERES e on a.no_article = e.no_article " + 
-			"WHERE e.no_utilisateur=? AND no_categorie=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
+			"WHERE e.no_utilisateur=? AND no_categorie=? AND LOWER(nom_article) like ? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ENCHERES_REMPORTEES=
 			"SELECT a.* FROM ARTICLES_VENDUS a " + 
 			"INNER JOIN ENCHERES e on a.no_article = e.no_article " + 
-			"WHERE e.no_utilisateur=? AND e.montant_enchere=a.prix_vente AND date_fin_encheres<? ORDER BY nom_article;";
+			"WHERE e.no_utilisateur=? AND LOWER(nom_article) like ? AND e.montant_enchere=a.prix_vente AND date_fin_encheres<? ORDER BY nom_article;";
 	private static final String SQL_SELECT_ENCHERES_REMPORTEES_CATEGORIE=
 			"SELECT a.* FROM ARTICLES_VENDUS a " + 
 			"INNER JOIN ENCHERES e on a.no_article = e.no_article " + 
-			"WHERE e.no_utilisateur=? AND no_categorie=? AND e.montant_enchere=a.prix_vente AND date_fin_encheres<? ORDER BY nom_article;";
+			"WHERE e.no_utilisateur=? AND no_categorie=? AND LOWER(nom_article) like ? AND e.montant_enchere=a.prix_vente AND date_fin_encheres<? ORDER BY nom_article;";
 	private static final String SQL_SELECT_VENTES_ENCOURS=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND LOWER(nom_article) like ? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_VENTES_ENCOURS_CATEGORIE=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND no_categorie=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND LOWER(nom_article) like ? AND no_categorie=? AND date_debut_encheres<=? AND date_fin_encheres>=? ORDER BY nom_article;";
 	private static final String SQL_SELECT_VENTES_A_VENIR=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND date_debut_encheres>?  ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND LOWER(nom_article) like ? AND date_debut_encheres>?  ORDER BY nom_article;";
 	private static final String SQL_SELECT_VENTES_A_VENIR_CATEGORIE=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND no_categorie=? AND date_debut_encheres>?  ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND LOWER(nom_article) like ? AND no_categorie=? AND date_debut_encheres>?  ORDER BY nom_article;";
 	private static final String SQL_SELECT_VENTES_TERMINEES=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND date_fin_encheres<? ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND LOWER(nom_article) like ? AND date_fin_encheres<? ORDER BY nom_article;";
 	private static final String SQL_SELECT_VENTES_TERMINEES_CATEGORIE=
-			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND no_categorie=? AND date_fin_encheres<? ORDER BY nom_article;";
+			"SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur=? AND LOWER(nom_article) like ? AND no_categorie=? AND date_fin_encheres<? ORDER BY nom_article;";
 	private static final String SQL_INSERT=
-			"INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie ) VALUES (?,?,?,?,?,?,?,?);";
+			"INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie ) VALUES (?,?,?,?,?,?,?,?) ORDER BY nom_article;";
 	private static final String SQL_UPDATE=
-			"UPDATE ARTICLES_VENDUS SET nom_article=?, description=?, date_debut_encheres=?, date_fin_encheres=?, prix_initial=?, prix_vente=?, no_utilisateur=?, no_categorie=? WHERE no_article=?;";
+			"UPDATE ARTICLES_VENDUS SET nom_article=?, description=?, date_debut_encheres=?, date_fin_encheres=?, prix_initial=?, prix_vente=?, no_utilisateur=?, no_categorie=? WHERE no_article=? ORDER BY nom_article;";
 	private static final String SQL_DELETE=
-			"DELETE FROM ARTICLES_VENDUS WHERE no_article=?;";
+			"DELETE FROM ARTICLES_VENDUS WHERE no_article=? ORDER BY nom_article;";
 	
 	@Override
 	public ArticleVendu selectById(int no_article) throws BusinessException {
@@ -100,13 +100,19 @@ public class ArticleVenduDAOJdbcImpl implements ArticleVenduDAO{
 		return articleVendu;
 	}
 
-	private List<ArticleVendu> select(String sql, int no_utilisateur, int no_categorie) throws BusinessException {
+	private List<ArticleVendu> select(String sql, int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
 		
 		List<ArticleVendu> liste=new ArrayList<>();
 		
 		try(Connection cn=ConnectionProvider.getConnection())
 		{
 			PreparedStatement stmt = cn.prepareStatement(sql);
+			
+			//controle le nom de l'article - la recherche se fait en lower case
+			if (nom_article == null) {
+				nom_article="";
+			}
+			nom_article="%" + nom_article.toLowerCase() + "%";
 			
 			//recupere la date du jour
 			Date date = new Date();
@@ -116,86 +122,100 @@ public class ArticleVenduDAOJdbcImpl implements ArticleVenduDAO{
 			switch(sql) {
 			
 				case SQL_SELECT_ALL_ENCOURS :
-					stmt.setDate(1, today);
-					stmt.setDate(2, today);		
+					stmt.setString(1, nom_article);
+					stmt.setDate(2, today);
+					stmt.setDate(3, today);		
 					break;
 					
 				case SQL_SELECT_ALL_ENCOURS_CATEGORIE :
-					stmt.setInt(1, no_categorie);
-					stmt.setDate(2, today);
+					stmt.setString(1, nom_article);
+					stmt.setInt(2, no_categorie);
 					stmt.setDate(3, today);
+					stmt.setDate(4, today);
 					break;
 					
 				case SQL_SELECT_ENCHERES_ENCOURS :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setDate(2, today);
+					stmt.setString(2, nom_article);
 					stmt.setDate(3, today);
+					stmt.setDate(4, today);
 					break;
 					
 				case SQL_SELECT_ENCHERES_ENCOURS_CATEGORIE :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setInt(2, no_categorie);
-					stmt.setDate(3, today);
+					stmt.setString(2, nom_article);
+					stmt.setInt(3, no_categorie);
 					stmt.setDate(4, today);
+					stmt.setDate(5, today);
 					break;
 					
 				case SQL_SELECT_ENCHERES_UTILISATEUR :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setDate(2, today);
+					stmt.setString(2, nom_article);
 					stmt.setDate(3, today);
+					stmt.setDate(4, today);
 					break;
 					
 				case SQL_SELECT_ENCHERES_UTILISATEUR_CATEGORIE :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setInt(2, no_categorie);
-					stmt.setDate(3, today);
+					stmt.setString(2, nom_article);
+					stmt.setInt(3, no_categorie);
 					stmt.setDate(4, today);
+					stmt.setDate(5, today);
 					break;
 					
 				case SQL_SELECT_ENCHERES_REMPORTEES :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setDate(2, today);
+					stmt.setString(2, nom_article);
+					stmt.setDate(3, today);
 					break;			
 					
 				case SQL_SELECT_ENCHERES_REMPORTEES_CATEGORIE :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setInt(2, no_categorie);
-					stmt.setDate(3, today);
+					stmt.setString(2, nom_article);
+					stmt.setInt(3, no_categorie);
+					stmt.setDate(4, today);
 					break;
 					
 				case SQL_SELECT_VENTES_ENCOURS :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setDate(2, today);
-					stmt.setDate(3, today);
-					break;
-					
-				case SQL_SELECT_VENTES_ENCOURS_CATEGORIE :
-					stmt.setInt(1, no_utilisateur);
-					stmt.setInt(2, no_categorie);
+					stmt.setString(2, nom_article);
 					stmt.setDate(3, today);
 					stmt.setDate(4, today);
 					break;
 					
+				case SQL_SELECT_VENTES_ENCOURS_CATEGORIE :
+					stmt.setInt(1, no_utilisateur);
+					stmt.setString(2, nom_article);
+					stmt.setInt(3, no_categorie);
+					stmt.setDate(4, today);
+					stmt.setDate(5, today);
+					break;
+					
 				case SQL_SELECT_VENTES_A_VENIR :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setDate(2, today);
+					stmt.setString(2, nom_article);
+					stmt.setDate(3, today);
 					break;					
 					
 				case SQL_SELECT_VENTES_A_VENIR_CATEGORIE :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setInt(2, no_categorie);
-					stmt.setDate(3, today);
+					stmt.setString(2, nom_article);
+					stmt.setInt(3, no_categorie);
+					stmt.setDate(4, today);
 					break;
 					
 				case SQL_SELECT_VENTES_TERMINEES :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setDate(2, today);
+					stmt.setString(2, nom_article);
+					stmt.setDate(3, today);
 					break;	
 					
 				case SQL_SELECT_VENTES_TERMINEES_CATEGORIE :
 					stmt.setInt(1, no_utilisateur);
-					stmt.setInt(2, no_categorie);
-					stmt.setDate(3, today);
+					stmt.setString(2, nom_article);
+					stmt.setInt(3, no_categorie);
+					stmt.setDate(4, today);
 					break;
 			}
 			
@@ -340,110 +360,88 @@ public class ArticleVenduDAOJdbcImpl implements ArticleVenduDAO{
 	@Override
 	public List<ArticleVendu> selectAll() throws BusinessException {
 		// Liste de tous les articles en base de données
-		List<ArticleVendu> articles = select(SQL_SELECT_ALL,-1,-1);
-		return articles;
-	}
-	
-	@Override
-	public List<ArticleVendu> selectAllEnCours() throws BusinessException {
-		//Toutes les encheres en cours de toutes les catégories
-		List<ArticleVendu> articles = select(SQL_SELECT_ALL_ENCOURS, -1, -1);
+		List<ArticleVendu> articles = select(SQL_SELECT_ALL,-1,-1,null);
 		return articles;
 	}
 
 	@Override
-	public List<ArticleVendu> selectAllEnCours(int no_categorie) throws BusinessException {
-		//Toutes les encheres en cours selon la catégorie indiquée
-		List<ArticleVendu> articles = select(SQL_SELECT_ALL_ENCOURS_CATEGORIE, -1, no_categorie);
+	public List<ArticleVendu> selectAllEnCours(int no_categorie, String nom_article) throws BusinessException {
+		//Toutes les encheres en cours 
+		String sql=SQL_SELECT_ALL_ENCOURS;
+		if (no_categorie>0) {
+			sql=SQL_SELECT_ALL_ENCOURS_CATEGORIE;
+		}
+		List<ArticleVendu> articles = select(sql, -1, no_categorie, nom_article);
 		return articles;
 	}
 
 	@Override
-	public List<ArticleVendu> selectEncheresEnCours(int no_utilisateur) throws BusinessException {
-		//Encheres en-cours toutes categories, sauf celles du user connecté
-		List<ArticleVendu> articles = select(SQL_SELECT_ENCHERES_ENCOURS, no_utilisateur, -1);
+	public List<ArticleVendu> selectEncheresEnCours(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
+		//Encheres en-cours sauf celles du user connecté 
+		String sql=SQL_SELECT_ENCHERES_ENCOURS;
+		if (no_categorie>0) {
+			sql=SQL_SELECT_ENCHERES_ENCOURS_CATEGORIE;
+		}
+		List<ArticleVendu> articles = select(sql, no_utilisateur, no_categorie, nom_article);
 		return articles;
 	}
 
 	@Override
-	public List<ArticleVendu> selectEncheresEnCours(int no_utilisateur, int no_categorie) throws BusinessException {
-		//Encheres en-cours de la categorie sauf celles du user connecté 
-		List<ArticleVendu> articles = select(SQL_SELECT_ENCHERES_ENCOURS_CATEGORIE, no_utilisateur, no_categorie);
+	public List<ArticleVendu> selectEncheresEnCoursUtilisateur(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
+		//Encheres en cours pour le user connecte
+		String sql=SQL_SELECT_ENCHERES_UTILISATEUR;
+		if (no_categorie>0) {
+			sql=SQL_SELECT_ENCHERES_UTILISATEUR_CATEGORIE;
+		}
+		List<ArticleVendu> articles = select(sql, no_utilisateur, no_categorie, nom_article);
 		return articles;
 	}
 
 	@Override
-	public List<ArticleVendu> selectEncheresEnCoursUtilisateur(int no_utilisateur) throws BusinessException {
-		//Encheres en cours toutes categories pour le user connecte
-		List<ArticleVendu> articles = select(SQL_SELECT_ENCHERES_UTILISATEUR, no_utilisateur, -1);
-		return articles;
-	}
-
-	@Override
-	public List<ArticleVendu> selectEncheresEnCoursUtilisateur(int no_utilisateur, int no_categorie) throws BusinessException {
-		//Encheres en cours pour la categorie pour le user connecte
-		List<ArticleVendu> articles = select(SQL_SELECT_ENCHERES_UTILISATEUR_CATEGORIE, no_utilisateur, no_categorie);
-		return articles;
-	}
-
-	@Override
-	public List<ArticleVendu> selectEncheresRemporteesUtilisateur(int no_utilisateur)
+	public List<ArticleVendu> selectEncheresRemporteesUtilisateur(int no_utilisateur, int no_categorie, String nom_article)
 			throws BusinessException {
-		//Encheres remportées toutes categories pour le user connecte
-		List<ArticleVendu> articles = select(SQL_SELECT_ENCHERES_REMPORTEES, no_utilisateur, -1);
+		//Encheres remportées pour le user connecte
+		String sql=SQL_SELECT_ENCHERES_REMPORTEES;
+		if (no_categorie>0) {
+			sql=SQL_SELECT_ENCHERES_REMPORTEES_CATEGORIE;
+		}
+		List<ArticleVendu> articles = select(sql, no_utilisateur, no_categorie, nom_article);
 		return articles;
 	}
 
 	@Override
-	public List<ArticleVendu> selectEncheresRemporteesUtilisateur(int no_utilisateur, int no_categorie)
+	public List<ArticleVendu> selectVentesEnCoursUtilisateur(int no_utilisateur, int no_categorie, String nom_article)
 			throws BusinessException {
-		//Encheres remportées pour la categorie pour le user connecte
-		List<ArticleVendu> articles = select(SQL_SELECT_ENCHERES_REMPORTEES_CATEGORIE, no_utilisateur, no_categorie);
+		//Ventes en cours du user 
+		String sql=SQL_SELECT_VENTES_ENCOURS;
+		if (no_categorie>0) {
+			sql=SQL_SELECT_VENTES_ENCOURS_CATEGORIE;
+		}
+		List<ArticleVendu> articles = select(sql, no_utilisateur, no_categorie, nom_article);
 		return articles;
 	}
 
 	@Override
-	public List<ArticleVendu> selectVentesEnCoursUtilisateur(int no_utilisateur) throws BusinessException {
-		//Ventes en cours du user toutes ctegories
-		List<ArticleVendu> articles = select(SQL_SELECT_VENTES_ENCOURS, no_utilisateur, -1);
-		return articles;
-	}
-
-	@Override
-	public List<ArticleVendu> selectVentesEnCoursUtilisateur(int no_utilisateur, int no_categorie)
+	public List<ArticleVendu> selectVentesAVenirUtilisateur(int no_utilisateur, int no_categorie, String nom_article)
 			throws BusinessException {
-		//Ventes en cours du user pour la categorie
-		List<ArticleVendu> articles = select(SQL_SELECT_VENTES_ENCOURS_CATEGORIE, no_utilisateur, no_categorie);
+		//Ventes à venir du user 
+		String sql=SQL_SELECT_VENTES_A_VENIR;
+		if (no_categorie>0) {
+			sql=SQL_SELECT_VENTES_A_VENIR_CATEGORIE;
+		}
+		List<ArticleVendu> articles = select(sql, no_utilisateur, no_categorie, nom_article);
 		return articles;
 	}
 
 	@Override
-	public List<ArticleVendu> selectVentesAVenirUtilisateur(int no_utilisateur) throws BusinessException {
-		//Ventes à venir du user  toutes ctegories
-		List<ArticleVendu> articles = select(SQL_SELECT_VENTES_A_VENIR, no_utilisateur, -1);
-		return articles;
-	}
-
-	@Override
-	public List<ArticleVendu> selectVentesAVenirUtilisateur(int no_utilisateur, int no_categorie)
+	public List<ArticleVendu> selectVentesTermineesUtilisateur(int no_utilisateur, int no_categorie, String nom_article)
 			throws BusinessException {
-		//Ventes à venir du user  pour la categorie
-		List<ArticleVendu> articles = select(SQL_SELECT_VENTES_A_VENIR_CATEGORIE, no_utilisateur, no_categorie);
-		return articles;
-	}
-
-	@Override
-	public List<ArticleVendu> selectVentesTermineesUtilisateur(int no_utilisateur) throws BusinessException {
-		//Ventes terminées du user  toutes ctegories
-		List<ArticleVendu> articles = select(SQL_SELECT_VENTES_TERMINEES_CATEGORIE, no_utilisateur, -1);
-		return articles;
-	}
-
-	@Override
-	public List<ArticleVendu> selectVentesTermineesUtilisateur(int no_utilisateur, int no_categorie)
-			throws BusinessException {
-		//Ventes terminées du user  pour la categorie
-		List<ArticleVendu> articles = select(SQL_SELECT_VENTES_TERMINEES_CATEGORIE, no_utilisateur, no_categorie);
+		//Ventes terminées du user  
+		String sql=SQL_SELECT_VENTES_TERMINEES;
+		if (no_categorie>0) {
+			sql=SQL_SELECT_VENTES_TERMINEES_CATEGORIE;
+		}
+		List<ArticleVendu> articles = select(sql, no_utilisateur, no_categorie, nom_article);
 		return articles;
 	}
 

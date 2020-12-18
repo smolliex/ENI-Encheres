@@ -63,8 +63,7 @@ public class ServletCompte extends HttpServlet {
 			Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
 			try {
 				manager.supprimerUtilisateur(utilisateur.getNo_utilisateur());
-				RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/listeEncheres.jsp");
-				rd.forward(request, response);
+				response.sendRedirect(request.getContextPath()+"/ListeEncheres");
 			} catch (BusinessException e) {
 				BusinessException businessException = new BusinessException(); 
 				businessException.ajouterErreur(CodesResultatServlets.SUPPRESSION_UTILISATEUR_ERREUR);
@@ -86,6 +85,9 @@ public class ServletCompte extends HttpServlet {
 			if(!mdp1.equals(mdp2)) {
 				BusinessException businessException = new BusinessException(); 
 				businessException.ajouterErreur(CodesResultatServlets.MOTS_DE_PASSE_DIFFERENTS);
+				request.setAttribute("Exception", businessException);
+				RequestDispatcher rd = request.getRequestDispatcher(request.getServletPath());
+				rd.forward(request, response);
 			}else {
 				utilisateur.setMot_de_passe(request.getParameter("mot_de_passe"));
 				UtilisateurManager manager = new UtilisateurManager();
@@ -108,8 +110,7 @@ public class ServletCompte extends HttpServlet {
 					}
 				}
 				session.setAttribute("utilisateur", utilisateur);
-				RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/listeEncheres.jsp");
-				rd.forward(request, response);
+				response.sendRedirect(request.getContextPath()+"/ListeEncheres");
 			}
 		}
 		

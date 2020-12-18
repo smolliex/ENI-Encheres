@@ -11,6 +11,8 @@ public abstract class CodesResultatServlets {
 	public static final int CREATION_UTILISATEUR_ERREUR = 30003;
 	public static final int SUPPRESSION_UTILISATEUR_ERREUR = 30004;
 	public static final int SELECTION_UTILISATEUR_ERREUR = 30005;
+	public static final int MOT_DE_PASSE_INCORRECT = 30006;
+	public static final int UTILISATEUR_INCONNU = 30007;
 	
 	
 	

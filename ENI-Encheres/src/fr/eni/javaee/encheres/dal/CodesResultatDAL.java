@@ -12,13 +12,7 @@ package fr.eni.javaee.encheres.dal;
  */
 public abstract class CodesResultatDAL {
 	
-	/******* UTILISATEUR *******/
-	public static final int INSERT_UTILISATEUR_NULL=10000;
-	public static final int INSERT_UTILISATEUR_ECHEC=10001;
-	public static final int UPDATE_UTILISATEUR_NULL = 10002;
-	public static final int UPDATE_UTILISATEUR_ECHEC = 10003;
-	public static final int DELETE_UTILISATEUR_ECHEC = 10004;
-	public static final int SELECT_UTILISATEUR_ECHEC = 10005;
+	/******** ARTICLES ********/
 	public static final int INSERT_ARTICLE_NULL=10021;
 	public static final int INSERT_ARTICLE_ECHEC=10022;
 	public static final int UPDATE_ARTICLE_NULL = 10023;
@@ -35,6 +29,16 @@ public abstract class CodesResultatDAL {
 	public static final int DELETE_CATEGORIE_ECHEC = 10085;
 	public static final int SELECT_CATEGORIE_ECHEC = 10086;
 	public static final int BUILDER_CATEGORIE_ECHEC = 10087;
+	
+	/******* UTILISATEUR *******/
+	public static final int INSERT_UTILISATEUR_NULL=10100;
+	public static final int INSERT_UTILISATEUR_ECHEC=10101;
+	public static final int UPDATE_UTILISATEUR_NULL = 10102;
+	public static final int UPDATE_UTILISATEUR_ECHEC = 10103;
+	public static final int DELETE_UTILISATEUR_ECHEC = 10104;
+	public static final int SELECT_UTILISATEUR_ECHEC = 10105;
+	
+	
 	
 }
 

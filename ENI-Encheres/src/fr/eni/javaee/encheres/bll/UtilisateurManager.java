@@ -62,6 +62,10 @@ public class UtilisateurManager {
 		return utilisateurDAO.selectById(no_utilisateur);
 		}
 	
+	public Utilisateur getUtilisateurLogin (String pseudo) throws BusinessException{
+		return utilisateurDAO.selectByPseudo(pseudo);
+	}
+	
 	
 	
 	private void validerUtilisateurInsertion (Utilisateur utilisateur, BusinessException businessException) throws BusinessException {

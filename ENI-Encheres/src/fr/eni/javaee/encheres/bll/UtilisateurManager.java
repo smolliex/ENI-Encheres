@@ -201,7 +201,7 @@ public class UtilisateurManager {
 	}
 	
 	private void validerCodePostal (String codePostal, BusinessException businessException) throws BusinessException {
-		if(codePostal.trim().length() >5 || codePostal == null || !codePostal.matches("[0-9]*")) 
+		if(codePostal.trim().length() >10 || codePostal == null || !codePostal.matches("[0-9]*")) 
 		{
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_UTILISATEUR_CODE_POSTAL_ERREUR);
 		}

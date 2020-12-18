@@ -29,8 +29,82 @@ public class ArticleVenduManager {
 	}
 	
 	public List<ArticleVendu> getListeArticlesVendu() throws BusinessException {
+		// Tous les articles de la base de données
 		return DAOArticleVendu.selectAll();
 	}
+	
+	public List<ArticleVendu> getListeEncheresEncoursToutes() throws BusinessException {
+		// Toutes les encheres en cours de toutes categories et tous vendeurs
+		return DAOArticleVendu.selectAllEnCours();
+	}
+
+	public List<ArticleVendu> getListeEncheresEncoursToutes(int no_categorie) throws BusinessException {
+		// Toutes les encheres en cours selon la catégorie de tous les vendeurs
+		return DAOArticleVendu.selectAllEnCours(no_categorie);
+	}
+	
+	public List<ArticleVendu> getListeEncheresEncoursAutresVendeurs(int no_utilisateur) throws BusinessException {
+		//Toutes les encheres en-cours sauf celles de l'utilisateur toutes categories
+		return DAOArticleVendu.selectEncheresEnCours(no_utilisateur);
+	}
+	
+	public List<ArticleVendu> getListeEncheresEncoursAutresVendeurs(int no_utilisateur, int no_categorie) throws BusinessException {
+		//Encheres en-cours sauf celles de l'utilisateur selon la catégorie indiquée
+		return DAOArticleVendu.selectEncheresEnCours(no_utilisateur,no_categorie);
+	}
+	
+	public List<ArticleVendu> getListeEncheresEncoursUtilisateur(int no_utilisateur) throws BusinessException {
+		//Toutes les encheres en-cours de l'utilisateur indiqué pour toutes categories
+		return DAOArticleVendu.selectEncheresEnCoursUtilisateur(no_utilisateur);
+	}
+	
+	public List<ArticleVendu> getListeEncheresEncoursUtilisateur(int no_utilisateur, int no_categorie) throws BusinessException {
+		//Encheres en-cours de l'utilisateur indiqué pour la categorie indiquée
+		return DAOArticleVendu.selectEncheresEnCoursUtilisateur(no_utilisateur,no_categorie);
+	}
+	
+	public List<ArticleVendu> getListeEncheresRemporteesUtilisateur(int no_utilisateur) throws BusinessException {
+		//Toutes les encheres remportées de l'utilisateur indiqué pour toutes categories
+		return DAOArticleVendu.selectEncheresRemporteesUtilisateur(no_utilisateur);
+	}
+	
+	public List<ArticleVendu> getListeEncheresRemporteesUtilisateur(int no_utilisateur, int no_categorie) throws BusinessException {
+		//Encheres remportées de l'utilisateur indiqué pour la categorie
+		return DAOArticleVendu.selectEncheresRemporteesUtilisateur(no_utilisateur,no_categorie);
+	}
+	
+	public List<ArticleVendu> getListeVentesEncoursUtilisateur(int no_utilisateur) throws BusinessException {
+		//Ventes en cours de l'utilisateur pour toutes categories
+		return DAOArticleVendu.selectVentesEnCoursUtilisateur(no_utilisateur);
+	}
+	
+	public List<ArticleVendu> getListeVentesEncoursUtilisateur(int no_utilisateur, int no_categorie) throws BusinessException {
+		//Ventes en cours de l'utilisateur pour la categorie indiquée
+		return DAOArticleVendu.selectVentesEnCoursUtilisateur(no_utilisateur,no_categorie);
+	}
+	
+	public List<ArticleVendu> getListeVentesAVenirsUtilisateur(int no_utilisateur) throws BusinessException {
+		//Ventes à venir de l'utilisateur pour toutes categories
+		return DAOArticleVendu.selectVentesAVenirUtilisateur(no_utilisateur);
+	}
+	
+	public List<ArticleVendu> getListeVentesAVenirsUtilisateur(int no_utilisateur, int no_categorie) throws BusinessException {
+		//Ventes à venir de l'utilisateur pour la categorie indiquée
+		return DAOArticleVendu.selectVentesAVenirUtilisateur(no_utilisateur,no_categorie);
+	}
+	
+	public List<ArticleVendu> getListeVentesTermineesUtilisateur(int no_utilisateur) throws BusinessException {
+		//Ventes fermées de l'utilisateur pour toutes categories
+		return DAOArticleVendu.selectVentesTermineesUtilisateur(no_utilisateur);
+	}
+	
+	public List<ArticleVendu> getListeVentesTermineesUtilisateur(int no_utilisateur, int no_categorie) throws BusinessException {
+		//Ventes fermées de l'utilisateur pour la categorie indiquée
+		return DAOArticleVendu.selectVentesTermineesUtilisateur(no_utilisateur,no_categorie);
+	}
+	
+	
+	
 	
 	public ArticleVendu getArticleVendu(int no_article) throws BusinessException {
 		return DAOArticleVendu.selectById(no_article);

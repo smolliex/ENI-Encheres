@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import fr.eni.javaee.encheres.bo.ArticleVendu;
 import fr.eni.javaee.encheres.bo.Categorie;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.messages.BusinessException;
+import fr.eni.javaee.encheres.messages.LecteurMessage;
 
 /**
  * Servlet implementation class ServletArticle
@@ -30,62 +32,54 @@ import fr.eni.javaee.encheres.messages.BusinessException;
 @WebServlet("/vente")
 public class ServletVente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		//Charge l'article 
-		String strId = request.getParameter("no_article");
-		int no_article=0;
 		
-		if(strId!=null && !strId.isEmpty()) {
-
-			no_article = Integer.valueOf(strId);
+		List<Integer> listeCodesErreur = new ArrayList<>();
+		
+		try {
 			
-			ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
-			ArticleVendu articleVendu = null;
-			
-			try{
-				articleVendu = articleVenduManager.getArticleVendu(no_article);
+			int no_article=0;
+			no_article = lireParametreInt(request, "no_article", listeCodesErreur);
 				
-			} catch (BusinessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(no_article>0)
+			{
+				// charge l'article 
+				ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
+				ArticleVendu articleVendu = null;
+				articleVendu = articleVenduManager.getArticleVendu(no_article);
+				if(articleVendu==null) {
+					listeCodesErreur.add(CodesResultatServlets.VENTE_INCONNUE);
+				}
+				
+				// transmet à la page
+				request.setAttribute("article", articleVendu);
+				request.setAttribute("isModifiable", isModifiable(articleVendu));
+				request.setAttribute("isSupprimable", isSupprimable(articleVendu));
+			}else
+			{
+				request.setAttribute("isModifiable", Boolean.TRUE);
+				request.setAttribute("isSupprimable", Boolean.FALSE);
 			}
 			
-			request.setAttribute("article", articleVendu);
-		}
-		
-		// charge les categories
-		CategorieManager categorieManager = CategorieManager.getInstance();
-		List<Categorie> categories = null;
-		try {
-			categories = categorieManager.getListeCategories();
+			request.setAttribute("dateDuJour", dateDuJour());
+			request.setAttribute("categories", listeCategories(listeCodesErreur));
+			
+			
 		} catch (BusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			for (int err : e.getListeCodesErreur()) {
+				listeCodesErreur.add(err);
+			}
 		}
-		request.setAttribute("categories", categories);
 		
-		// date minimum
-		Date date = new Date();  
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
-		String dateMin = dateFormat.format(date);  
+		// transmet la liste des erreurs
+		request.setAttribute("ListeLibellesErreurs",ListeLibellesErreurs(listeCodesErreur));
 
-		request.setAttribute("dateMin", dateMin);
-		
 		// affiche la page
-		RequestDispatcher rd=null;
-		if (no_article==0) {
-			// nouveau
-			rd=request.getRequestDispatcher("/WEB-INF/jsp/vente.jsp");			
-		}else
-		{
-			// existant
-			rd=request.getRequestDispatcher("/WEB-INF/jsp/vente.jsp?no_article=" + no_article);			
-		}
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/vente.jsp");			
 		rd.forward(request, response);
 		
 	}
@@ -95,86 +89,201 @@ public class ServletVente extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		////// a enlever ////
-		RequestDispatcher rd=null;
-		rd=request.getRequestDispatcher("/WEB-INF/jsp/listeEncheres.jsp");			
-		rd.forward(request, response);
-		//////////
-		
-		// encodage
 		request.setCharacterEncoding("UTF-8");
 		
-		//recupere l'utilisateur connecté = vendeur
-		Utilisateur vendeur=null;
+		List<Integer> listeCodesErreur = new ArrayList<>();
+		ArticleVendu articleVendu = null;
 		
-		HttpSession session=request.getSession();
-		if(session.getAttribute("utilisateur")!=null) {
-			vendeur = (Utilisateur)session.getAttribute("utilisateur");
-		}
-		
-		//recupere valeurs et les caste si nécessaire
-		int no_article =0;
-		String strId = request.getParameter("no_article");
-		if(strId!=null && !strId.isEmpty()) {
-			no_article = Integer.valueOf(strId);
-		}
-		
-		String nom_article = request.getParameter("nom");
-		String description = request.getParameter("description");
-		
-		String no_categorie = request.getParameter("categorie");
-		int noCategorie = Integer.valueOf(no_categorie);
-		
-		String prix_initial = request.getParameter("prixInitial");
-		int prixInitial = Integer.valueOf(prix_initial);
-		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		
-		String date_debut_encheres = request.getParameter("dateDebut");
-		LocalDate dateDebutEncheres = LocalDate.parse(date_debut_encheres, dtf);
-		
-		String date_fin_encheres = request.getParameter("dateFin");
-		LocalDate dateFinEncheres = LocalDate.parse(date_fin_encheres, dtf);
-		
-		//recupere la categorie
-		Categorie categorie = new Categorie();
-		categorie.setNo_categorie(noCategorie);
-		
-		//construit l'article
-		ArticleVenduManager articleVenduManager;
-		articleVenduManager = ArticleVenduManager.getInstance();
-		
-		ArticleVendu articleVendu = new ArticleVendu();	
-
-		if(no_article==0) {
-			articleVendu.setVendeur(vendeur);	
-		}else
-		{
-			articleVendu.setNo_article(no_article);
-		}
-		articleVendu.setNom_article(nom_article);
-		articleVendu.setDescription(description);
-		articleVendu.setCategorie(categorie);
-		articleVendu.setPrix_initial(prixInitial);
-		articleVendu.setDate_debut_encheres(dateDebutEncheres);
-		articleVendu.setDate_fin_encheres(dateFinEncheres);
-
-		// enregistre
 		try {
-			if (no_article>0) {
-				//modifie
+			
+			// Récupère les valeurs du formulaire
+			articleVendu = recupererSaisieArticle(request, listeCodesErreur);
+			
+			// controle et enregistre
+			ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
+			
+			if (articleVendu.getNo_article()>0) {
 				articleVenduManager.updateArticleVendu(articleVendu);
 			}else
 			{
-				//crée
 				articleVenduManager.createArticleVendu(articleVendu);
 			}
-
+			
 		} catch (BusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			for (int err : e.getListeCodesErreur()) {
+				listeCodesErreur.add(err);
+			}
+		}
+		
+		if(listeCodesErreur.size()>0)
+		{
+			// recharge la page en affichant les erreurs
+			request.setAttribute("dateMin", dateDuJour());
+			request.setAttribute("categories", listeCategories(listeCodesErreur));
+			request.setAttribute("article", articleVendu);
+			request.setAttribute("isModifiable", Boolean.TRUE);
+			request.setAttribute("isSupprimable", isSupprimable(articleVendu));
+			request.setAttribute("ListeLibellesErreurs",ListeLibellesErreurs(listeCodesErreur));
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/vente.jsp");			
+			rd.forward(request, response);
+			
+		}else {
+			// redirige vers la liste
+			response.sendRedirect(request.getContextPath() + "/ListeEncheres");
 		}
 		
 	}
+	
+	private int lireParametreInt(HttpServletRequest request, String parametre, List<Integer> listeCodesErreur) {
+		// Renvoie la valeur du parametre de type INT
+		int valeur=0;
+		try
+		{
+			if(request.getParameter(parametre)!=null && !request.getParameter(parametre).isEmpty())
+			{
+				valeur = Integer.parseInt(request.getParameter(parametre));
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			e.printStackTrace();
+			listeCodesErreur.add(CodesResultatServlets.LECTURE_PARAMETRE_VENTE);
+		}
+		return valeur;
+	}
+	
+	private String lireParametreString(HttpServletRequest request, String parametre, List<Integer> listeCodesErreur) {
+		// Renvoie la valeur du parametre de type STRING
+		String valeur = request.getParameter(parametre);
+		if(valeur==null)
+		{
+			listeCodesErreur.add(CodesResultatServlets.LECTURE_PARAMETRE_VENTE);
+		}
+		return valeur;
+	}
+	
+	private LocalDate lireParametreLocalDate(HttpServletRequest request, String parametre, List<Integer> listeCodesErreur) {
+		// Renvoie la valeur du parametre de type LocalDate
+		LocalDate valeur=null;
+		try
+		{
+			String string = request.getParameter(parametre);
+			if(string!=null && !string.isEmpty())
+			{
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				valeur = LocalDate.parse(string, dtf);
+			}
+		}
+		catch(DateTimeParseException e)
+		{
+			e.printStackTrace();
+			listeCodesErreur.add(CodesResultatServlets.LECTURE_PARAMETRE_VENTE);
+		}
+		return valeur;
+	}
+	
+	private ArticleVendu recupererSaisieArticle(HttpServletRequest request, List<Integer> listeCodesErreur) {
+		
+		//recupere les parametres du formulaire
+		int no_article = lireParametreInt(request, "no_article", listeCodesErreur);
 
+		Utilisateur vendeur=null;
+		
+		String no_utilisateur = lireParametreString(request, "no_utilisateur", listeCodesErreur);
+/// en attendant d'avoir la session utilisateur //////////////////////////
+vendeur=new Utilisateur();
+vendeur.setNo_utilisateur(3);
+//////////////////////////////////////////////////////////////
+		if(no_utilisateur==null || no_utilisateur.isEmpty()) {
+			// Le vendeur est l'utilisateur connecté
+			HttpSession session=request.getSession();
+			if(session.getAttribute("utilisateur")!=null) {
+				vendeur = (Utilisateur)session.getAttribute("utilisateur");
+			}
+
+			
+		}else
+		{
+			vendeur = new Utilisateur();
+			vendeur.setNo_utilisateur(lireParametreInt(request, "no_utilisateur", listeCodesErreur));
+		}
+		
+		String nom = lireParametreString(request, "nom", listeCodesErreur);
+		String description = lireParametreString(request, "description", listeCodesErreur);
+		int prixInitial = lireParametreInt(request, "prixInitial", listeCodesErreur);
+		LocalDate dateDebut = lireParametreLocalDate(request, "dateDebut", listeCodesErreur);
+		LocalDate dateFin = lireParametreLocalDate(request, "dateFin", listeCodesErreur);
+
+		int no_categorie = lireParametreInt(request, "categorie", listeCodesErreur);
+		Categorie categorie = new Categorie();
+		categorie.setNo_categorie(no_categorie);
+		
+		//construit l'article
+		ArticleVendu articleVendu = new ArticleVendu();	
+		
+		articleVendu.setNo_article(no_article);
+		articleVendu.setVendeur(vendeur);	
+		articleVendu.setNom_article(nom);
+		articleVendu.setDescription(description);
+		articleVendu.setCategorie(categorie);
+		articleVendu.setPrix_initial(prixInitial);
+		articleVendu.setDate_debut_encheres(dateDebut);
+		articleVendu.setDate_fin_encheres(dateFin);
+		
+		return articleVendu;
+	}
+	
+	private List<String> ListeLibellesErreurs (List<Integer> listeCodesErreur){
+		List<String> liste=new ArrayList<>();
+		if(listeCodesErreur.size()>0)
+			for(int code:listeCodesErreur) {
+				liste.add(LecteurMessage.getMessageErreur(code));
+			}
+		return liste;
+	}
+	
+	private String dateDuJour() {
+		Date date = new Date();  
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
+		return dateFormat.format(date);
+	}	
+	
+	private List<Categorie> listeCategories(List<Integer> listeCodesErreur) {
+		List<Categorie> categories=null;
+		try {
+			CategorieManager categorieManager = CategorieManager.getInstance();
+			categories = categorieManager.getListeCategories();
+		} catch (BusinessException e) {
+			for (int err : e.getListeCodesErreur()) {
+				listeCodesErreur.add(err);
+			}
+		}
+		return categories;
+	}
+	
+	private Boolean isModifiable (ArticleVendu articleVendu) {
+		Boolean modifiable = Boolean.FALSE;
+		if(articleVendu!=null) {
+			LocalDate today = LocalDate.now(); 
+			if(	   (today.isEqual(articleVendu.getDate_debut_encheres()) || today.isAfter(articleVendu.getDate_debut_encheres()))
+				&& (today.isEqual(articleVendu.getDate_fin_encheres()) || today.isBefore(articleVendu.getDate_fin_encheres()))) 
+			{
+				modifiable = Boolean.TRUE;
+			}			
+		}
+		return modifiable;
+	}
+	
+	private Boolean isSupprimable (ArticleVendu articleVendu) {
+		Boolean supression = Boolean.FALSE;
+		if(articleVendu!=null) {
+			if( isModifiable(articleVendu) && articleVendu.getPrix_vente()==0 ) 
+			{
+				supression = Boolean.TRUE;
+			}
+		}
+		return supression;
+	}
+	
 }

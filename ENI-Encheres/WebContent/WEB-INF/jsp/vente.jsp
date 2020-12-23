@@ -13,7 +13,7 @@
 	    
 	    <link rel="icon" href="favicon.ico">
 		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap_yeti.min.css">
-				
+		
 		<style type="text/css">
 			label { display: inline-block; width: 130px; }
 			input[type='number']{text-align: right;}

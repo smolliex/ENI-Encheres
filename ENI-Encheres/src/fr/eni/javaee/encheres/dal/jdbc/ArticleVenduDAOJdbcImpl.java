@@ -244,7 +244,7 @@ public class ArticleVenduDAOJdbcImpl implements ArticleVenduDAO{
 
 		try(Connection cn=ConnectionProvider.getConnection())
 		{
-			PreparedStatement stmt = cn.prepareStatement(SQL_INSERT);
+			PreparedStatement stmt = cn.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, obj.getNom_article());
 			stmt.setString(2, obj.getDescription());
 			stmt.setDate(3, java.sql.Date.valueOf(obj.getDate_debut_encheres()));
@@ -253,8 +253,13 @@ public class ArticleVenduDAOJdbcImpl implements ArticleVenduDAO{
 			stmt.setInt(6, obj.getPrix_vente());
 			stmt.setInt(7, obj.getVendeur().getNo_utilisateur());
 			stmt.setInt(8, obj.getCategorie().getNo_categorie());
-			
 			stmt.executeUpdate();
+			
+			ResultSet rs = stmt.getGeneratedKeys();
+			if(rs.next())
+			{
+				obj.setNo_article(rs.getInt(1));
+			}
 			
 		} catch (NullPointerException e) {
 			e.printStackTrace();

@@ -19,5 +19,4 @@ public abstract class CodesResultatServlets {
 	public static final int LECTURE_PARAMETRE_VENTE = 30100;
 	public static final int VENTE_INCONNUE = 30101;
 	
-	
 }

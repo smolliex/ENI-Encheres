@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import fr.eni.javaee.encheres.bll.ArticleVenduManager;
 import fr.eni.javaee.encheres.bo.ArticleVendu;
 import fr.eni.javaee.encheres.bo.Retrait;
 import fr.eni.javaee.encheres.dal.RetraitDAO;
@@ -110,11 +111,18 @@ public class RetraitDAOJdbcImpl implements RetraitDAO{
 
 		try(Connection cn=ConnectionProvider.getConnection())
 		{
-			PreparedStatement stmt = cn.prepareStatement(SQL_INSERT);
+			PreparedStatement stmt = cn.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, obj.getRue());
 			stmt.setString(2, obj.getCode_postal());
 			stmt.setString(3, obj.getVille());
 			stmt.executeUpdate();
+			
+			ResultSet rs = stmt.getGeneratedKeys();
+			if(rs.next())
+			{
+				ArticleVenduManager articleManager = ArticleVenduManager.getInstance();
+				obj.setArticle(articleManager.getArticleVendu(rs.getInt(1)));
+			}
 			
 		} catch (NullPointerException e) {
 			e.printStackTrace();

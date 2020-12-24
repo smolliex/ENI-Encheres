@@ -109,9 +109,15 @@ public class CategorieDAOJdbcImpl implements CategorieDAO{
 
 		try(Connection cn=ConnectionProvider.getConnection())
 		{
-			PreparedStatement stmt = cn.prepareStatement(SQL_INSERT);
+			PreparedStatement stmt = cn.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, obj.getLibelle());
 			stmt.executeUpdate();
+			
+			ResultSet rs = stmt.getGeneratedKeys();
+			if(rs.next())
+			{
+				obj.setNo_categorie(rs.getInt(1));
+			}
 			
 		} catch (NullPointerException e) {
 			e.printStackTrace();

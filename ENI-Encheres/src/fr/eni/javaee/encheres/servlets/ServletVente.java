@@ -26,6 +26,7 @@ import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.messages.BusinessException;
 import fr.eni.javaee.encheres.messages.LecteurMessage;
 
+
 /**
  * Servlet implementation class ServletArticle
  */
@@ -191,10 +192,12 @@ public class ServletVente extends HttpServlet {
 		Utilisateur vendeur=null;
 		
 		String no_utilisateur = lireParametreString(request, "no_utilisateur", listeCodesErreur);
+		
 /// en attendant d'avoir la session utilisateur //////////////////////////
 vendeur=new Utilisateur();
 vendeur.setNo_utilisateur(3);
 //////////////////////////////////////////////////////////////
+
 		if(no_utilisateur==null || no_utilisateur.isEmpty()) {
 			// Le vendeur est l'utilisateur connecté
 			HttpSession session=request.getSession();

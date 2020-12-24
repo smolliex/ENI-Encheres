@@ -19,6 +19,15 @@ public abstract class CodesResultatBLL {
 	public static final int REGLE_ARTICLE_VENDEUR_MANQUANT = 20031;
 	public static final int REGLE_ARTICLE_VENDEUR_INCONNU = 20032;
 	
+	/******* RETRAITS  *******/
+	public static final int REGLE_RETRAIT_ARTICLE_INCONNU = 20061;
+	public static final int REGLE_RETRAIT_RUE_MANQUANT = 20062;
+	public static final int REGLE_RETRAIT_RUE_LONG = 20063;
+	public static final int REGLE_RETRAIT_CODE_POSTAL_MANQUANT = 20064;
+	public static final int REGLE_RETRAIT_CODE_POSTAL_LONG= 20065;
+	public static final int REGLE_RETRAIT_VILLE_MANQUANT = 20066;
+	public static final int REGLE_RETRAIT_VILLE_LONG = 20067;
+	
 	/******* CATEGORIE *******/
 	public static final int REGLE_CATEGORIE_LIBELLE_MANQUANT = 20081;
 	public static final int REGLE_CATEGORIE_LIBELLE_LONG = 20082;

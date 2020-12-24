@@ -21,6 +21,15 @@ public abstract class CodesResultatDAL {
 	public static final int SELECT_ARTICLE_ECHEC = 10026;
 	public static final int BUILDER_ARTICLE_ECHEC = 10027;
 	
+	/******* RETRAITS *******/
+	public static final int INSERT_RETRAIT_NULL=10061;
+	public static final int INSERT_RETRAIT_ECHEC=10062;
+	public static final int UPDATE_RETRAIT_NULL = 10063;
+	public static final int UPDATE_RETRAIT_ECHEC = 10064;
+	public static final int DELETE_RETRAIT_ECHEC = 10065;
+	public static final int SELECT_RETRAIT_ECHEC = 10066;
+	public static final int BUILDER_RETRAIT_ECHEC = 10067;
+	
 	/******* CATEGORIE *******/
 	public static final int INSERT_CATEGORIE_NULL=10081;
 	public static final int INSERT_CATEGORIE_ECHEC=10082;

@@ -8,11 +8,25 @@ h2{
 	font-weight: bold !important;
 }
 
-label{
-	font-size: 1.5rem !important;
+/* Classes */
+
+input[type="radio"].radio-checkbox {
+  display: none;
+}
+input[type="radio"].radio-checkbox + label::before {
+  font-family: "Font Awesome 5 Free";
+  font-size: 1.2em;  
+  color: #000 ;
+  margin: 0 0.5rem ;
 }
 
-/* Classes */
+input[type="radio"].radio-checkbox + label::before {
+  content: '\f0c8';
+}
+input[type="radio"].radio-checkbox:checked + label::before {
+  content: '\f14a';
+}
+
 
 
 /*  Ids  */
@@ -30,4 +44,7 @@ label{
 #link-title{
 	font-weight: bold;
 
+}
+#label-categorie{
+	font-size: 1.5rem !important;
 }

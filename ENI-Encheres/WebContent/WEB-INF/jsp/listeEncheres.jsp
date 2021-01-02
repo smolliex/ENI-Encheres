@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page import="fr.eni.javaee.encheres.messages.LecteurMessage" %>
+<%@ page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -14,6 +15,7 @@
 	    <meta name="author" content="">
 	    <link rel="icon" href="favicon.ico">
 		<link rel="stylesheet" href="vendor/css/listeEncheres.css">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap_yeti.min.css">
 		<title>Listes des enchères</title>
 	</head>
@@ -25,17 +27,35 @@
 		<!-- Navigation -->
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary static-top">
 		  <div class="container-fluid">
-			<a class="navbar-brand" href="#" id="link-title">ENI Enchères</a>
+			<a class="navbar-brand" href="<%=request.getContextPath()%>/ListeEncheres" id="link-title">ENI Enchères</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 			  <ul class="navbar-nav ml-auto">
-				<li class="nav-item active">
-				  <a class="nav-link" href="#" id="link-connect">Se connecter - S'inscrire
-					<span class="sr-only">(current)</span>
-				  </a>
-				</li>
+			  	<!-- Affichage de liens en mode déconnecté -->
+			  	<c:if test="${empty sessionScope.utilisateur}">
+					<li class="nav-item active">
+					  <a class="nav-link" href="<%=request.getContextPath()%>/Connexion" id="link-connect">Se connecter - S'inscrire
+						<span class="sr-only">(current)</span>
+					  </a>
+					</li>
+				</c:if>
+				<!-- Affichage de liens en mode connecté -->
+				<c:if test="${!empty sessionScope.utilisateur}">
+					<li class="nav-item active">
+					  <a class="nav-link" href="<%=request.getContextPath()%>/ListeEncheres" id="link-connect">Enchères</a>
+					</li>					
+					<li class="nav-item active">
+					  <a class="nav-link" href="<%=request.getContextPath()%>/vente" id="link-connect">Vendre un article</a>
+					</li>
+					<li class="nav-item active">
+					  <a class="nav-link" href="<%=request.getContextPath()%>/mon_profil" id="link-connect">Mon profil</a>
+					</li>
+					<li class="nav-item active">
+					  <a class="nav-link" href="<%=request.getContextPath()%>/SeDeconnecter" id="link-connect">Déconnexion</a>
+					</li>					
+				</c:if>
 			  </ul>
 			</div>
 		  </div>
@@ -43,88 +63,134 @@
 	
 	</header>
 	
+	<!--  Corps de la page  -->
 	<main class="container-fluid">
+		<!-- Messages d'alertes -->
+		<div class="container">
+			<c:if test="${!empty listeCodesErreur}">
+				<div class="alert alert-danger" role="alert">
+					<c:forEach var="codeErreur" items="${listeCodesErreur}">
+						${LecteurMessage.getMessageErreur(codeErreur)} <!-- Ne fonctionne pas si la classe LecteurMesasge est abstraite -->
+					</c:forEach>
+				</div>
+			</c:if>
+		</div>
+		
+		<!-- Titre de la page -->
 		<div class="row text-center">
 			<div class="col">
 				<h1 class="my-5">Liste des enchères</h1> 
 			</div>
 		</div>
-
-			<form class="row mx-md-5">
+			
+			<!--  Formulaire de recherche -->
+			<form class="row mx-md-5" action="<%=request.getContextPath()%>/ListeEncheres" method="post">
 				<div class="col-12 col-md-6 px-md-5">
+					<c:if test="${!empty sessionScope.utilisateur}">
+					<p>L'utilisateur est ${ sessionScope.utilisateur.prenom } ${ sessionScope.utilisateur.nom } !</p>
+					</c:if>
 					<h2 class="my-3">Filtres :</h2>
 					<div class="input-group flex-nowrap">
 					  <span class="input-group-text" id="addon-wrapping"><jsp:include page="../icons/loupe.html" /></span>
-					  <input type="text" class="form-control" name="article" id="article" placeholder="Le nom de l'article contient" aria-label="article" aria-describedby="addon-wrapping">
+					  <input type="text" class="form-control" name="article" id="article"
+					   <c:if test="${empty nomArticleSaisi}"> placeholder="Le nom de l'article contient" </c:if>
+					   <c:if test="${!empty nomArticleSaisi}"> placeholder="${nomArticleSaisi}" </c:if>
+					   aria-label="article" aria-describedby="addon-wrapping">
 					</div>
 					<div class="row align-items-center my-3">
 					  <div class="col-auto">
-					    <label for="categorie" class="col-form-label">Catégorie :</label>
+					    <label for="categorie" class="col-form-label" id="label-categorie">Catégorie :</label>
 					  </div>
 					  <div class="col-auto">
-					    <select class="form-control">
-					    <c:if test="${!empty listeCategories}">
-						    <option value="${listeCategories[0].libelle}" selected>${listeCategories[0].libelle}</option>
-						    <c:if test="${fn:length(listeCategories) > 1}">
-							    <c:forEach var="categorie" begin="1" items="${listeCategories}">
-							    	<option value="${categorie.libelle}">${categorie.libelle}</option>
-							    </c:forEach>			    
-						    </c:if>				    
-					    </c:if>
-					    <c:if test="${empty listeCategories}">
-					    	<option value="null">Pas de categories disponible</option>
-					    </c:if>
+					    <select class="form-control" name="categorie">
+					    	<c:if test="${empty categorieSelectionnee}"><option value="-1" selected>Toutes les catégories</option></c:if>
+					    	<c:if test="${!empty categorieSelectionnee}"><option value="-1">Toutes les catégories</option></c:if>
+						    <c:if test="${!empty listeCategories}">
+							    <c:forEach var="categorie" items="${listeCategories}">
+							    	<option value="${categorie.no_categorie}"
+							    	<c:if test="${categorieSelectionnee.libelle.equals(categorie.libelle) }"> selected </c:if>	
+							    	>${categorie.libelle}</option>
+							    </c:forEach>			    			    
+						    </c:if>
+						    <c:if test="${empty listeCategories}">
+						    	<option value="null">Pas de categorie disponible</option>
+						    </c:if>
 						</select>
 					  </div>
 					</div>	
-					<!--  
-					<div class="row">
-					 	<div class="col form-check">
-							<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-							<label class="form-check-label" for="flexRadioDefault1">Achats</label>
-							<div class="row mx-3 my-3">
-								<div class="form-check">
-								  <input class="form-check-input" type="checkbox" id="defaultCheckbox1" value="option1">
-								  <label class="form-check-label" for="defaultCheckbox1">enchères ouvertes</label>
-								</div>
-								<div class="form-check">
-								  <input class="form-check-input" type="checkbox" id="defaultCheckbox2" value="option2">
-								  <label class="form-check-label" for="defaultCheckbox2">mes enchères en cours</label>
-								</div>
-								<div class="form-check">
-								  <input class="form-check-input" type="checkbox" id="defaultCheckbox3" value="option3">
-								  <label class="form-check-label" for="defaultCheckbox3">mes enchères remportées</label>
-								</div>												 						
-							</div>
-					 	</div>
-					 	<div class="col">
-							<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-							<label class="form-check-label" for="flexRadioDefault2">Mes ventes</label>	
+ 					<c:if test="${!empty sessionScope.utilisateur}">
+						<div class="row form-check-inline">
+						 	<div class="col-12 col-md-6">
+						 	<c:if test="${choixUtilisateur.equals('achats')}">
+								<input class="form-check-input" type="radio" name="choix" id="achats" value="achats" checked>	
+						 	</c:if>
+						 	<c:if test="${empty choixUtilisateur || choixUtilisateur.equals('ventes')}">
+								<input class="form-check-input" type="radio" name="choix" id="achats" value="achats">	
+						 	</c:if>
+								<label class="form-check-label" for="choix">Achats</label>
 								<div class="row mx-3 my-3">
-								<div class="form-check">
-								  <input class="form-check-input" type="checkbox" id=defaultCheckbox1" value="option1">
-								  <label class="form-check-label" for="defaultCheckbox1">mes ventes en cours</label>
+									<div class="form-check col-12">
+									  <input class="form-check-input" type="radio" name="choixAchat" id="encheresOuvertes" value="encheresOuvertes"
+									  <c:if test="${choixAchat.equals('encheresOuvertes')}"> checked</c:if>
+									   >
+									  <label class="form-check-label" for="encheresOuvertes">enchères ouvertes</label>
+									</div>
+									<div class="form-check col-12">
+									  <input class="form-check-input" type="radio" name="choixAchat" id="encheresEnCours" value="encheresEnCours"
+									  <c:if test="${choixAchat.equals('encheresEnCours')}"> checked</c:if>
+									  >
+									  <label class="form-check-label" for="encheresEnCours">mes enchères en cours</label>
+									</div>
+									<div class="form-check col-12">
+									  <input class="form-check-input" type="radio" name="choixAchat" id="encheresRemportees" value="encheresRemportees"
+									  <c:if test="${choixAchat.equals('encheresRemportees')}"> checked</c:if>
+									  >
+									  <label class="form-check-label" for="encheresRemportees">mes enchères remportées</label>
+									</div>												 						
 								</div>
-								<div class="form-check">
-								  <input class="form-check-input" type="checkbox" id="defaultCheckbox2" value="option2">
-								  <label class="form-check-label" for="defaultCheckbox2">ventes non débutées</label>
-								</div>
-								<div class="form-check">
-								  <input class="form-check-input" type="checkbox" id="defaultCheckbox3" value="option3">
-								  <label class="form-check-label" for="defaultCheckbox3">ventes terminées</label>
-								</div>	
-							</div>									
-					 	</div>
-					</div>	-->			
+						 	</div>
+						 	<div class="col-12 col-md-6">
+						 	<c:if test="${choixUtilisateur.equals('ventes')}">
+								<input class="form-check-input" type="radio" name="choix" id="ventes" value="ventes" checked>	
+						 	</c:if>
+						 	<c:if test="${empty choixUtilisateur || choixUtilisateur.equals('achats')}">
+								<input class="form-check-input" type="radio" name="choix" id="ventes" value="ventes">	
+						 	</c:if>
+								<label class="form-check-label" for="choix">Mes ventes</label>	
+								<div class="row mx-3 my-3">
+									<div class="form-check col-12">
+									  <input class="form-check-input" type="radio" name="choixVente" id="ventesEnCours" value="ventesEncours"
+									  <c:if test="${choixVente.equals('ventesEncours')}"> checked</c:if>
+									  >
+									  <label class="form-check-label" for="choixVente">mes ventes en cours</label>
+									</div>
+									<div class="form-check col-12">
+									  <input class="form-check-input" type="radio" name="choixVente" id="ventesNonDebutees" value="ventesNonDebutees"
+									  <c:if test="${choixVente.equals('ventesNonDebutees')}"> checked</c:if>
+									  >
+									  <label class="form-check-label" for="choixVente">ventes non débutées</label>
+									</div>
+									<div class="form-check col-12">
+									  <input class="form-check-input" type="radio" name="choixVente" id="ventesTerminees" value="ventesTerminees"
+									  <c:if test="${choixVente.equals('ventesTerminees')}"> checked</c:if>
+									  >
+									  <label class="form-check-label" for="choixVente">ventes terminées</label>
+									</div>	
+								</div>									
+						 	</div>
+						</div>	
+ 					</c:if>
 				</div>
 				<div class="col-12 col-md-6 text-center m-auto">
 					<button type="submit" class="btn btn-primary btn-lg" id="btn-rechercher">Rechercher</button>
 				</div>	
 			</form>
+			<!-- Fin formulaire de recherche -->
 			
+			<!--  Liste des enchères -->
 			<div class="row my-5 mx-md-5">
-				<c:if test="${!empty listeArticlesVendus}">
-					<c:forEach var="articleVendu" items="${listeArticlesVendus}">
+				<c:if test="${!empty liste}">
+					<c:forEach var="enchere" items="${liste}">
 						<div class="col-12 col-md-6 my-2">
 							<div class="card">
 								<!--Card content-->
@@ -134,25 +200,25 @@
 										</div>
 									<div class="col-md-7">
 										<!--Title-->
-										<h3 class="card-title mt-2 mt-md-0"><a href="">${articleVendu.nom_article}</a></h3>
+										<h3 class="card-title mt-2 mt-md-0"><a href="">${enchere.nom_article}</a></h3>
 										<!--Text-->
-										<p class="card-text">Prix: ${articleVendu.prix_initial}</p>
-										<p class="card-text">Fin de l'enchère: ${articleVendu.date_fin_encheres}</p>
-										<p class="card-text">Vendeur : <a href="">${articleVendu.vendeur.pseudo}</a></p>    
+										<p class="card-text">Prix: ${enchere.prix_initial}</p>
+										<p class="card-text">Fin de l'enchère: ${enchere.date_fin_encheres}</p>
+										<p class="card-text">Vendeur : <a href="">${enchere.vendeur.pseudo}</a></p>    
 									</div>			
 								</div>
 							</div>
 						</div>
 				    </c:forEach>
 				</c:if>
-				<c:if test="${empty listeArticlesVendus}">
-					<p>Pas d'articles vendus</p>
+				<c:if test="${empty liste}">
+					<p class="mx-5">Aucun résultat correspondant à votre recherche</p>
 				</c:if>
 			</div>
+			<!-- Fin Liste des enchères -->
 	</main>
-	
-	
-			<!-- Pied de page -->
+		
+	<!-- Pied de page -->
     <footer class="py-5 bg-secondary">
       <div class="container">
         <p class="m-0 text-center text-black">Copyright &copy; ENI - 2020</p>
@@ -160,8 +226,64 @@
     </footer>
 	
     <!-- Placed at the end of the document so the pages load faster -->
-        <!-- Placed at the end of the document so the pages load faster -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"> 
+    /* Décoche les autres boutons radio en fonction du click sur un des boutons radio*/
+    $('#achats').click(function(){
+		$('#ventesEnCours').prop('checked', false);
+		$('#ventesNonDebutees').prop('checked', false);
+		$('#ventesTerminees').prop('checked', false);
+		$('#encheresOuvertes').prop('checked', true);
+    });
+    $('#ventes').click(function(){
+		$('#encheresOuvertes').prop('checked', false);
+		$('#encheresEnCours').prop('checked', false);
+		$('#encheresRemportees').prop('checked', false);
+		$('#ventesEnCours').prop('checked', true);
+ 	});
+    $('#encheresOuvertes').click(function(){
+		$('#ventes').prop('checked', false);
+		$('#achats').prop('checked', true);
+		$('#ventesEnCours').prop('checked', false);
+		$('#ventesNonDebutees').prop('checked', false);
+		$('#ventesTerminees').prop('checked', false);
+ 	});
+    $('#encheresEnCours').click(function(){
+		$('#ventes').prop('checked', false);
+		$('#achats').prop('checked', true);
+		$('#ventesEnCours').prop('checked', false);
+		$('#ventesNonDebutees').prop('checked', false);
+		$('#ventesTerminees').prop('checked', false);
+ 	});
+    $('#encheresRemportees').click(function(){
+		$('#ventes').prop('checked', false);
+		$('#achats').prop('checked', true);
+		$('#ventesEnCours').prop('checked', false);
+		$('#ventesNonDebutees').prop('checked', false);
+		$('#ventesTerminees').prop('checked', false);
+ 	});
+    $('#ventesEnCours').click(function(){
+		$('#ventes').prop('checked', true);
+		$('#achats').prop('checked', false);
+		$('#encheresOuvertes').prop('checked', false);
+		$('#encheresEnCours').prop('checked', false);
+		$('#encheresRemportees').prop('checked', false);
+ 	});
+    $('#ventesNonDebutees').click(function(){
+		$('#ventes').prop('checked', true);
+		$('#achats').prop('checked', false);
+		$('#encheresOuvertes').prop('checked', false);
+		$('#encheresEnCours').prop('checked', false);
+		$('#encheresRemportees').prop('checked', false);
+ 	});
+    $('#ventesTerminees').click(function(){
+		$('#ventes').prop('checked', true);
+		$('#achats').prop('checked', false);
+		$('#encheresOuvertes').prop('checked', false);
+		$('#encheresEnCours').prop('checked', false);
+		$('#encheresRemportees').prop('checked', false);
+ 	});
+    </script>
 	</body>
 </html>

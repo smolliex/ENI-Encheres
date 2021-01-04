@@ -200,7 +200,7 @@
 										</div>
 									<div class="col-md-7">
 										<!--Title-->
-										<h3 class="card-title mt-2 mt-md-0"><a href="">${enchere.nom_article}</a></h3>
+										<h3 class="card-title mt-2 mt-md-0"><a href="<%=request.getContextPath()%>/vente?no_article=${enchere.no_article}">${enchere.nom_article}</a></h3>
 										<!--Text-->
 										<p class="card-text">Prix: ${enchere.prix_initial}</p>
 										<p class="card-text">Fin de l'enchère: ${enchere.date_fin_encheres}</p>

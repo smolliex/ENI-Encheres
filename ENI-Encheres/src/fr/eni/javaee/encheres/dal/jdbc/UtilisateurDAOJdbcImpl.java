@@ -26,6 +26,7 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 	private static final String SELECT_BY_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur=?";
 	private static final String SELECT_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS ORDER BY nom, prenom";
 	private static final String SELECT_BY_PSEUDO ="SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE pseudo=?";
+	private static final String SELECT_BY_EMAIL ="SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE email=?";
 	
 
 	@Override
@@ -204,6 +205,41 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 		{
 			PreparedStatement pstmt = cnx.prepareStatement(SELECT_BY_PSEUDO);
 			pstmt.setString(1, pseudo);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				utilisateur.setNo_utilisateur(rs.getInt("no_utilisateur"));
+				utilisateur.setPseudo(rs.getString("pseudo"));
+				utilisateur.setNom(rs.getString("nom"));
+				utilisateur.setPrenom(rs.getString("prenom"));
+				utilisateur.setEmail(rs.getString("email"));
+				utilisateur.setTelephone(rs.getString("telephone"));
+				utilisateur.setRue(rs.getString("rue"));
+				utilisateur.setCode_postal(rs.getString("code_postal"));
+				utilisateur.setVille(rs.getString("ville"));
+				utilisateur.setPseudo(rs.getString("pseudo"));
+				utilisateur.setMot_de_passe(rs.getString("mot_de_passe"));
+				utilisateur.setCredit(rs.getInt("credit"));
+				utilisateur.setAdministrateur(rs.getBoolean("administrateur"));
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			logger.severe(e.getMessage());
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultatDAL.SELECT_UTILISATEUR_ECHEC);
+			throw businessException;
+		}
+		return utilisateur;
+	}
+
+	@Override
+	public Utilisateur selectByEmail(String email) throws BusinessException {
+		Utilisateur utilisateur = new Utilisateur();
+		try(Connection cnx = ConnectionProvider.getConnection())
+		{
+			PreparedStatement pstmt = cnx.prepareStatement(SELECT_BY_EMAIL);
+			pstmt.setString(1, email);
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next()) {
 				utilisateur.setNo_utilisateur(rs.getInt("no_utilisateur"));

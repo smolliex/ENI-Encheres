@@ -62,8 +62,12 @@ public class UtilisateurManager {
 		return utilisateurDAO.selectById(no_utilisateur);
 		}
 	
-	public Utilisateur getUtilisateurLogin (String pseudo) throws BusinessException{
+	public Utilisateur getUtilisateurByPseudo (String pseudo) throws BusinessException{
 		return utilisateurDAO.selectByPseudo(pseudo);
+	}
+	
+	public Utilisateur getUtilisateurByEmail (String email) throws BusinessException{
+		return utilisateurDAO.selectByEmail(email);
 	}
 	
 	

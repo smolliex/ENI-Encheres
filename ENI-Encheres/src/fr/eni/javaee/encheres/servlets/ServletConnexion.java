@@ -1,6 +1,8 @@
 package fr.eni.javaee.encheres.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -26,16 +28,19 @@ public class ServletConnexion extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		HttpSession session = request.getSession();
+		String identifiant = null;
+		String mot_de_passe = null;
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("login")){
-					String login = cookie.getValue();
-					session.setAttribute("login", login);
+				if (cookie.getName().equals("identifiant")){
+					identifiant = cookie.getValue();
+					session.setAttribute("identifiant", identifiant);
 				}
 				if (cookie.getName().equals("password")) {
-					String mot_de_passe = cookie.getValue();
+					mot_de_passe = cookie.getValue();
 					session.setAttribute("password", mot_de_passe);
 				}
 			}
@@ -55,31 +60,53 @@ public class ServletConnexion extends HttpServlet {
 		//gestion de la connexion avec un cookie si "seRappeler" est sélectionné
 		HttpSession session = request.getSession();
 		Utilisateur utilisateur = new Utilisateur();
-		String pseudo = request.getParameter("pseudo");
+		String identifiant = request.getParameter("identifiant");
 		String mot_de_passe = request.getParameter("mot_de_passe");
 		UtilisateurManager manager = new UtilisateurManager();
-		utilisateur.setPseudo("pseudo");
-		try {
-			utilisateur = manager.getUtilisateurLogin(pseudo);
-		} catch (BusinessException e) {
-			BusinessException businessException = new BusinessException();
-			businessException.ajouterErreur(CodesResultatServlets.UTILISATEUR_INCONNU);
-			e.printStackTrace();
+		if (identifiant.contains("@")){
+			utilisateur.setEmail(identifiant);
+			try {
+				
+				utilisateur = manager.getUtilisateurByEmail(identifiant);
+			} catch (BusinessException e) {
+				BusinessException businessException = new BusinessException();
+				businessException.ajouterErreur(CodesResultatServlets.UTILISATEUR_INCONNU);
+				e.printStackTrace();
+			}
 		}
+		else{
+			utilisateur.setPseudo(identifiant);
+			try {
+				
+				utilisateur = manager.getUtilisateurByPseudo(identifiant);
+			} catch (BusinessException e) {
+				BusinessException businessException = new BusinessException();
+				businessException.ajouterErreur(CodesResultatServlets.UTILISATEUR_INCONNU);
+				e.printStackTrace();
+			}
+		}
+		
 		if(!mot_de_passe.equals(utilisateur.getMot_de_passe())){
 			BusinessException businessException = new BusinessException();
 			businessException.ajouterErreur(CodesResultatServlets.MOT_DE_PASSE_INCORRECT);
 		}else {
-			if(request.getParameter("souvenir") == "ok") {
-				Cookie login = new Cookie("login", pseudo);
-				login.setMaxAge(10000);
-				response.addCookie(login);
+			//Création de cookies si "se souvenir" est coché
+			if(request.getParameter("SeSouvenir") == "OK") {
+				if(identifiant.contains("@")) {
+					Cookie identifiantEmail = new Cookie("identifiant", utilisateur.getEmail());
+					identifiantEmail.setMaxAge(100);
+					response.addCookie(identifiantEmail);
+				}else {
+					Cookie identifiantPseudo = new Cookie("identifiant", utilisateur.getPseudo());
+					identifiantPseudo.setMaxAge(100);
+					response.addCookie(identifiantPseudo);
+				}
 				Cookie password = new Cookie("password", mot_de_passe);
-				login.setMaxAge(10000);
+				password.setMaxAge(100);
 				response.addCookie(password);
 			}
 			session.setAttribute("utilisateur", utilisateur);
-			RequestDispatcher rd = request.getRequestDispatcher(request.getContextPath()+"/ListeEncheres");
+			RequestDispatcher rd = request.getRequestDispatcher("/ListeEncheres");
 			rd.forward(request, response);
 		}
 	}

@@ -1,3 +1,5 @@
+<%@ page import="fr.eni.javaee.encheres.messages.LecteurMessage" %>
+<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -15,6 +17,7 @@
     <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="vendor/css/profil.css">
     <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap_yeti.min.css">
     <title>Profil de l'utilisateur</title>
 </head>
 
@@ -30,24 +33,50 @@
         </nav>
 
     </header>
-    <main>
-    <div class="col-12 text-left pl-5">
-                    <p class="input" id="pseudo">Pseudo : "${user.pseudo}"</p><br>
+    
+    
+    <main class="container-fluid">
+        <div class="row text-center">
+            <div class="col">
+    
+       			<div class="container">
+       			<div class="row my-5 mx-5">
+					<div class="col-6 text-left pl-5">
+				 		<p>Pseudo : </p>
+					</div>
+					<div class="col-6 text-left pl-5">
+			 			<p>${user.pseudo}</p><br>
+					</div>
+					<div class="col-6 text-left pr-5">
+						 <p>Nom : </p>
+					</div>
+					<div class="col-6 text-left pl-5">
+					 	<p>${user.nom}</p><br>
+					</div>
+			
+			
+			
+				</div>
+				</div>		
+        	
+        	
+        	<div class="informations">
+                    <p id="pseudo">Pseudo : ${user.pseudo}</p><br>
                     
-                    <p class="input" id="nom">Nom : "${user.nom}"</p><br>
+                    <p id="nom">Nom : ${user.nom}</p><br>
 
-                    <p class="input" id="prenom">Prénom : "${user.prenom}"</p><br>
+                    <p id="prenom">Prénom : ${user.prenom}</p><br>
                     
-                    <p class="input" id="email">Email : "${user.email}"</p><br>
+                    <p id="email">Email : ${user.email}</p><br>
                     
-                    <p class="input" id="telephone">Téléphone : "${user.telephone}"</p><br>
+                    <p id="telephone">Téléphone : ${user.telephone}</p><br>
                     
-                    <p class="input" id="rue">Rue "${user.rue}"</p><br>
+                    <p id="rue">Rue ${user.rue}</p><br>
                    
-                    <p class="input" id="pseudo">Code Postal "${user.code_postal}"</p><br>
+                    <p id="pseudo">Code Postal ${user.code_postal}</p><br>
                     
-                    <p class="input" id="pseudo">Ville "${user.ville}"</p><br>
-     </div>
+                    <p id="pseudo">Ville ${user.ville}</p><br>
+			</div>
                     
                     <c:if test="${utilisateur.no_utilisateur == user.no_utilisateur}">
                     <div class="row my-3">
@@ -56,7 +85,8 @@
 						</div>
 					</div>
 					</c:if>
-
+</div>
+</div>
     </main>
 
 </body>

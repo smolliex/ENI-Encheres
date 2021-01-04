@@ -1,11 +1,24 @@
 
-#input {
+.label{
+	
+			width: 150px;
+            display: inline-block;
+            text-align: left;
+            float: left;
+}
+
+.data {
             width: 250px;
             display: inline;
-            text-align: center;
             display: inline-block;
-           
+            text-align: center;
+            float: right;
 }
+
+.informations{
+	text-align: center;
+}
+
 
 main{
 			left-margin : 200px;
@@ -14,7 +27,17 @@ main{
             left-padding : 200 px;
 	
 }
+@media screen and (min-width: 600px) {
+        .col1 {
+          width: 50%;
+          float: left;
+        }
 
+        .col2 {
+          width: 50%;
+          float: right;
+        }
+}
 
 
 

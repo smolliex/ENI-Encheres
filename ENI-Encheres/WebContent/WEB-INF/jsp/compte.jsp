@@ -1,3 +1,5 @@
+<%@ page import="fr.eni.javaee.encheres.messages.LecteurMessage" %>
+<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -15,6 +17,7 @@
     <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="vendor/css/compte.css">
     <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap_yeti.min.css">
     <title>Création ou Modification du compte utilisateur</title>
 </head>
 
@@ -127,13 +130,13 @@
 					</c:if>
 					<c:if test="${!empty utilisateur}">
 					<div class="row my-3">
-						<div class="col-6 text-right pr-5">
+						<div class="col-4 text-right pr-5">
 							<button class="btn btn-lg btn-primary" type="submit">Enregistrer</button>
 						</div>
-						<div class="col-6 text-left pl-5">
+						<div class="col-4 text-left pl-5">
 							<a href="${pageContext.request.contextPath}/supprimer"><input type="button" class="btn btn-lg btn-primary" value="Supprimer"></a>
 						</div>
-						<div class="col-6 text-left pl-5">
+						<div class="col-4 text-left pl-5">
 							<a href= "${pageContext.request.contextPath}/profil"><input type="button" class="btn btn-lg btn-primary" value="Retour"></a>
 						</div>			
 					</div>

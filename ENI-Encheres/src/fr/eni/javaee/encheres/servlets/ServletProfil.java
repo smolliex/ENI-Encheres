@@ -28,17 +28,33 @@ public class ServletProfil extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int no_utilisateur = Integer.parseInt(request.getParameter("user"));
-		UtilisateurManager manager = new UtilisateurManager();
-		Utilisateur user = new Utilisateur();
-		try {
-			user = manager.getUtilisateur(no_utilisateur);
-		} catch (BusinessException e) {
-			BusinessException businessException = new BusinessException();
-			businessException.ajouterErreur(CodesResultatServlets.SELECTION_UTILISATEUR_ERREUR);
-			e.printStackTrace();
+		if(request.getServletPath().equals("/mon_profil"))
+		{
+			HttpSession session = request.getSession();
+			Utilisateur user = (Utilisateur) session.getAttribute("utilisateur");
+			UtilisateurManager manager = new UtilisateurManager();
+			int id = user.getNo_utilisateur();
+			try {
+				user = manager.getUtilisateur(id);
+				request.setAttribute("user", user);
+			} catch (BusinessException e) {
+				e.printStackTrace();
+				BusinessException businessException = new BusinessException(); 
+				businessException.ajouterErreur(CodesResultatServlets.SELECTION_UTILISATEUR_ERREUR);
+			}
+		}else {
+			int no_utilisateur = Integer.parseInt(request.getParameter("user"));
+			UtilisateurManager manager = new UtilisateurManager();
+			Utilisateur user = new Utilisateur();
+			try {
+				user = manager.getUtilisateur(no_utilisateur);
+				request.setAttribute("user", user);
+			} catch (BusinessException e) {
+				BusinessException businessException = new BusinessException();
+				businessException.ajouterErreur(CodesResultatServlets.SELECTION_UTILISATEUR_ERREUR);
+				e.printStackTrace();
+			}
 		}
-		request.setAttribute("user", user);
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/profil.jsp");
 		rd.forward(request, response);
 	}

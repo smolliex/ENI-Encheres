@@ -163,12 +163,12 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO{
 	@Override
 	public List<Utilisateur> selectAll() throws BusinessException {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
-		Utilisateur utilisateur = new Utilisateur();
 		try(Connection cnx = ConnectionProvider.getConnection())
 		{
 			PreparedStatement pstmt = cnx.prepareStatement(SELECT_ALL);
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
+				Utilisateur utilisateur = new Utilisateur();
 				utilisateur.setNo_utilisateur(rs.getInt("no_utilisateur"));
 				utilisateur.setPseudo(rs.getString("pseudo"));
 				utilisateur.setNom(rs.getString("nom"));

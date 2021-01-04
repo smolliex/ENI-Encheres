@@ -33,4 +33,7 @@ public abstract class CodesResultatServlets {
 	public static final int SELECTION_DES_VENTES_NON_DEBUTEES_EN_MODE_CONNECTE_ERREUR = 30609;
 	public static final int SELECTION_DES_VENTES_TERMINEES_EN_MODE_CONNECTE_ERREUR = 30610;
 	
+	// Administration
+	public static final int SELECTION_DES_UTILISATEURS_ERREUR = 30700;
+	
 }

@@ -76,6 +76,13 @@
 			</c:if>
 		</div>
 		
+		<!-- Lien vers l'administration -->
+		<c:if test="${!empty sessionScope.utilisateur.administrateur}">
+			<div class="row">
+				<a class="btn btn-danger font-weight-bold" href="<%=request.getContextPath()%>/Administration" role="button">Administration</a>			
+			</div>
+		</c:if>
+		
 		<!-- Titre de la page -->
 		<div class="row text-center">
 			<div class="col">

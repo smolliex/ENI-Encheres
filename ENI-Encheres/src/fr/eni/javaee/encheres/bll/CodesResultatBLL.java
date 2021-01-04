@@ -19,6 +19,7 @@ public abstract class CodesResultatBLL {
 	public static final int REGLE_ARTICLE_VENDEUR_MANQUANT = 20031;
 	public static final int REGLE_ARTICLE_VENDEUR_INCONNU = 20032;
 	public static final int REGLE_ARTICLE_SUPPRIMER = 20033;
+	public static final int REGLE_ARTICLE_ENCHERE_EN_COURS = 20034;
 	
 	/******* RETRAITS  *******/
 	public static final int REGLE_RETRAIT_ARTICLE_INCONNU = 20061;

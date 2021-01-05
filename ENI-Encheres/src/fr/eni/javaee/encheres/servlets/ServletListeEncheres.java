@@ -37,24 +37,21 @@ public class ServletListeEncheres extends HttpServlet {
 		
 		// Initialistion de la liste de codes d'erreurs
 		List<Integer> listeCodesErreur = new ArrayList<>();
-		
-		// Test avec un utilisateur connecté 
-		HttpSession session = request.getSession();
-		Utilisateur utilisateur;
-		utilisateur = selectionnerUnUtilisateur(1,listeCodesErreur); 
-		session.setAttribute("utilisateur", utilisateur);
+		BusinessException businessException = new BusinessException();
+
 	
 		// Récupération de la liste des catégories
 		List<Categorie> listeCategories = new ArrayList<Categorie>();
-		listeCategories = selectionnerToutesLesCategories(listeCodesErreur);
+		listeCategories = selectionnerToutesLesCategories(businessException);
 		request.setAttribute("listeCategories", listeCategories);
 		
 		// Récupération de la liste de toutes les enchères en cours
 		List<ArticleVendu> listeDeToutesLesEncheresEnCours = new ArrayList<ArticleVendu>();		
-		listeDeToutesLesEncheresEnCours = selectionnerToutesLesEncheresEnCours(-1, "", listeCodesErreur);
+		listeDeToutesLesEncheresEnCours = selectionnerToutesLesEncheresEnCours(-1, "", businessException);
 		request.setAttribute("liste", listeDeToutesLesEncheresEnCours);
 		
 		// Récupération de la liste des codes d'erreurs
+		listeCodesErreur = businessException.getListeCodesErreur();
 		request.setAttribute("listeCodesErreur", listeCodesErreur);
 		
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/listeEncheres.jsp");
@@ -67,8 +64,9 @@ public class ServletListeEncheres extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// Initialistion de la liste de codes d'erreurs.
+		// Initialistion de la liste de codes d'erreurs
 		List<Integer> listeCodesErreur = new ArrayList<>();
+		BusinessException businessException = new BusinessException();
 		
 		// Encodage des caractères.
 		request.setCharacterEncoding("UTF-8");
@@ -103,33 +101,41 @@ public class ServletListeEncheres extends HttpServlet {
 				nomArticle = request.getParameter("article");
 				request.setAttribute("nomArticleSaisi", nomArticle);
 				
-				noCategorie = Integer.parseInt(request.getParameter("categorie"));
-				//Récupération catégorie choisie
-				if (noCategorie > -1) {
-					Categorie categorieSelectionnee = selectionnerUneCategorie(noCategorie,listeCodesErreur);
-					request.setAttribute("categorieSelectionnee", categorieSelectionnee);
+				if (request.getParameter("categorie") != null) {
+					noCategorie = Integer.parseInt(request.getParameter("categorie"));		
+					//Récupération catégorie choisie
+					if (noCategorie > -1) {
+						Categorie categorieSelectionnee = selectionnerUneCategorie(noCategorie,businessException);
+						request.setAttribute("categorieSelectionnee", categorieSelectionnee);
+					}				
 				}
 				
 				//Récupération liste des catégories
 				List<Categorie> listeCategories = new ArrayList<Categorie>();
-				listeCategories = selectionnerToutesLesCategories(listeCodesErreur);
+				listeCategories = selectionnerToutesLesCategories(businessException);
 				request.setAttribute("listeCategories", listeCategories);
 				
 				// Si le choix concerne les achats
 				if (choixUtilisateur.equalsIgnoreCase("achats")) {
 					switch (choixAchat) {
 					case "encheresOuvertes":
-						listeAvecParamètres = selectionnerLesEncheresOuvertesAvecUnUtilisateurConnecte(noUtilisateur, noCategorie, nomArticle, listeCodesErreur);
+						listeAvecParamètres = selectionnerLesEncheresOuvertesAvecUnUtilisateurConnecte(noUtilisateur, noCategorie, nomArticle, businessException);
+						// Récupération de la liste des codes d'erreurs
+						listeCodesErreur = businessException.getListeCodesErreur();
 						request.setAttribute("listeCodesErreur", listeCodesErreur);
 						request.setAttribute("liste", listeAvecParamètres);
 						break;
 					case "encheresEnCours":
-						listeAvecParamètres = selectionnerLesEncheresEnCoursDeLUtilisateurConnecte(noUtilisateur, noCategorie, nomArticle, listeCodesErreur);
+						listeAvecParamètres = selectionnerLesEncheresEnCoursDeLUtilisateurConnecte(noUtilisateur, noCategorie, nomArticle, businessException);
+						// Récupération de la liste des codes d'erreurs
+						listeCodesErreur = businessException.getListeCodesErreur();
 						request.setAttribute("listeCodesErreur", listeCodesErreur);
 						request.setAttribute("liste", listeAvecParamètres);				
 						break;
 					case "encheresRemportees":
-						listeAvecParamètres = selectionnerLesEncheresRemporteesParLUtilisateur(noUtilisateur, noCategorie, nomArticle, listeCodesErreur);
+						listeAvecParamètres = selectionnerLesEncheresRemporteesParLUtilisateur(noUtilisateur, noCategorie, nomArticle, businessException);
+						// Récupération de la liste des codes d'erreurs
+						listeCodesErreur = businessException.getListeCodesErreur();
 						request.setAttribute("listeCodesErreur", listeCodesErreur);
 						request.setAttribute("liste", listeAvecParamètres);				
 						break;
@@ -139,17 +145,23 @@ public class ServletListeEncheres extends HttpServlet {
 				if (choixUtilisateur.equalsIgnoreCase("ventes")) {
 					switch (choixVente) {
 					case "ventesEncours":
-						listeAvecParamètres = selectionnerLesVentesEnCoursDeLUtilisateur(noUtilisateur, noCategorie, nomArticle, listeCodesErreur);
+						listeAvecParamètres = selectionnerLesVentesEnCoursDeLUtilisateur(noUtilisateur, noCategorie, nomArticle, businessException);
+						// Récupération de la liste des codes d'erreurs
+						listeCodesErreur = businessException.getListeCodesErreur();
 						request.setAttribute("listeCodesErreur", listeCodesErreur);
 						request.setAttribute("liste", listeAvecParamètres);
 						break;
 					case "ventesNonDebutees":
-						listeAvecParamètres = selectionnerLesVentesNonDebuteesDeLUtilisateur(noUtilisateur, noCategorie, nomArticle, listeCodesErreur);
+						listeAvecParamètres = selectionnerLesVentesNonDebuteesDeLUtilisateur(noUtilisateur, noCategorie, nomArticle, businessException);
+						// Récupération de la liste des codes d'erreurs
+						listeCodesErreur = businessException.getListeCodesErreur();
 						request.setAttribute("listeCodesErreur", listeCodesErreur);
 						request.setAttribute("liste", listeAvecParamètres);
 						break;
 					case "ventesTerminees":
-						listeAvecParamètres = selectionnerLesVentesTermineesDeLUtilisateur(noUtilisateur, noCategorie, nomArticle, listeCodesErreur);
+						listeAvecParamètres = selectionnerLesVentesTermineesDeLUtilisateur(noUtilisateur, noCategorie, nomArticle, businessException);
+						// Récupération de la liste des codes d'erreurs
+						listeCodesErreur = businessException.getListeCodesErreur();
 						request.setAttribute("listeCodesErreur", listeCodesErreur);
 						request.setAttribute("liste", listeAvecParamètres);
 						break;
@@ -171,20 +183,24 @@ public class ServletListeEncheres extends HttpServlet {
 				noCategorie = Integer.parseInt(request.getParameter("categorie"));
 				//Récupération catégorie choisie
 				if (noCategorie > -1) {
-					Categorie categorieSelectionnee = selectionnerUneCategorie(noCategorie,listeCodesErreur);
+					Categorie categorieSelectionnee = selectionnerUneCategorie(noCategorie,businessException);
 					request.setAttribute("categorieSelectionnee", categorieSelectionnee);
 				}
 				
 				//Récupération liste des catégories
 				List<Categorie> listeCategories = new ArrayList<Categorie>();
-				listeCategories = selectionnerToutesLesCategories(listeCodesErreur);
+				listeCategories = selectionnerToutesLesCategories(businessException);
 				request.setAttribute("listeCategories", listeCategories);
 				
 				//Récupération des listes
-				listeAvecParamètres = selectionnerToutesLesEncheresEnCours(noCategorie, nomArticle, listeCodesErreur);
+				listeAvecParamètres = selectionnerToutesLesEncheresEnCours(noCategorie, nomArticle, businessException);
+				// Récupération de la liste des codes d'erreurs
+				listeCodesErreur = businessException.getListeCodesErreur();
 				request.setAttribute("listeCodesErreur", listeCodesErreur);
 				request.setAttribute("liste", listeAvecParamètres);
 			} catch(NumberFormatException e) {
+				// Récupération de la liste des codes d'erreurs
+				listeCodesErreur = businessException.getListeCodesErreur();
 				listeCodesErreur.add(CodesResultatServlets.FORMAT_NUMERO_CATEGORIE_ERREUR);
 				request.setAttribute("listeCodesErreur", listeCodesErreur);
 			}	
@@ -199,125 +215,125 @@ public class ServletListeEncheres extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 
-	public List<Categorie> selectionnerToutesLesCategories(List<Integer> listeCodesErreur){
+	public List<Categorie> selectionnerToutesLesCategories(BusinessException businessException){
 			List<Categorie> listeCategories = new ArrayList<Categorie>();	
 			CategorieManager cm = CategorieManager.getInstance();
 			try {
 				listeCategories = cm.getListeCategories();
 			} catch (BusinessException e) {
 				e.printStackTrace();
-				listeCodesErreur.add(CodesResultatServlets.SELECTION_DE_TOUTES_LES_CATEGORIES_ERREUR);
+				businessException.ajouterErreur(CodesResultatServlets.SELECTION_DE_TOUTES_LES_CATEGORIES_ERREUR);
 				
 			}
 
 		return listeCategories;
 	}
 	
-	public Categorie selectionnerUneCategorie(int noCategorie,List<Integer> listeCodesErreur){
+	public Categorie selectionnerUneCategorie(int noCategorie,BusinessException businessException){
 		Categorie categorie = null;	
 		CategorieManager cm = CategorieManager.getInstance();
 		try {
 			categorie = cm.getCategorie(noCategorie);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DUNE_CATEGORIE_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DUNE_CATEGORIE_ERREUR);
 		}
 
 	return categorie;
 	}
 	
-	public List<ArticleVendu> selectionnerToutesLesEncheresEnCours(int noCategorie,String nomArticle, List<Integer> listeCodesErreur){
+	public List<ArticleVendu> selectionnerToutesLesEncheresEnCours(int noCategorie,String nomArticle, BusinessException businessException){
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
 		try {
 			listeArticlesVendus = avm.getListeEncheresEncoursToutes(noCategorie,nomArticle);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DE_TOUTES_LES_ENCHERES_EN_COURS_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DE_TOUTES_LES_ENCHERES_EN_COURS_ERREUR);
 		}
 		return listeArticlesVendus;
 	}
 	
-	public Utilisateur selectionnerUnUtilisateur(int no_utilisateur, List<Integer> listeCodesErreur) {
+	public Utilisateur selectionnerUnUtilisateur(int no_utilisateur, BusinessException businessException) {
 		Utilisateur utilisateur = null;
 		UtilisateurManager um = UtilisateurManager.getInstance();
 		try {
 			utilisateur = um.getUtilisateur(no_utilisateur);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DUN_UTILISATEUR_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DUN_UTILISATEUR_ERREUR);
 		}
 		return utilisateur;
 	}
 
-	public List<ArticleVendu> selectionnerLesEncheresOuvertesAvecUnUtilisateurConnecte(int no_utilisateur, int no_categorie, String nom_article, List<Integer> listeCodesErreur) {
+	public List<ArticleVendu> selectionnerLesEncheresOuvertesAvecUnUtilisateurConnecte(int no_utilisateur, int no_categorie, String nom_article, BusinessException businessException) {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
 		try {
 			listeArticlesVendus = avm.getListeEncheresEncoursAutresVendeurs(no_utilisateur, no_categorie, nom_article);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DE_TOUTES_LES_ENCHERES_EN_COURS_EN_MODE_CONNECTE_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DE_TOUTES_LES_ENCHERES_EN_COURS_EN_MODE_CONNECTE_ERREUR);
 		}
 		return listeArticlesVendus;
 	}
 	
-	public List<ArticleVendu> selectionnerLesEncheresEnCoursDeLUtilisateurConnecte(int no_utilisateur, int no_categorie, String nom_article, List<Integer> listeCodesErreur) {
+	public List<ArticleVendu> selectionnerLesEncheresEnCoursDeLUtilisateurConnecte(int no_utilisateur, int no_categorie, String nom_article, BusinessException businessException) {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
 		try {
 			listeArticlesVendus = avm.getListeEncheresEncoursUtilisateur(no_utilisateur, no_categorie, nom_article);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DES_ENCHERES_EN_COURS_EN_MODE_CONNECTE_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DES_ENCHERES_EN_COURS_EN_MODE_CONNECTE_ERREUR);
 		}
 		return listeArticlesVendus;
 	}
 	
-	public List<ArticleVendu> selectionnerLesEncheresRemporteesParLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, List<Integer> listeCodesErreur) {
+	public List<ArticleVendu> selectionnerLesEncheresRemporteesParLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, BusinessException businessException) {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
 		try {
 			listeArticlesVendus = avm.getListeEncheresRemporteesUtilisateur(no_utilisateur, no_categorie, nom_article);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DES_ENCHERES_REMPORTEES_EN_MODE_CONNECTE_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DES_ENCHERES_REMPORTEES_EN_MODE_CONNECTE_ERREUR);
 		}
 		return listeArticlesVendus;
 	}
 	
-	public List<ArticleVendu> selectionnerLesVentesEnCoursDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, List<Integer> listeCodesErreur) {
+	public List<ArticleVendu> selectionnerLesVentesEnCoursDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, BusinessException businessException) {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
 		try {
 			listeArticlesVendus = avm.getListeVentesEncoursUtilisateur(no_utilisateur, no_categorie, nom_article);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DES_VENTES_EN_COURS_EN_MODE_CONNECTE_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DES_VENTES_EN_COURS_EN_MODE_CONNECTE_ERREUR);
 		}
 		return listeArticlesVendus;
 	}
 	
-	public List<ArticleVendu> selectionnerLesVentesNonDebuteesDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, List<Integer> listeCodesErreur) {
+	public List<ArticleVendu> selectionnerLesVentesNonDebuteesDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, BusinessException businessException) {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
 		try {
 			listeArticlesVendus = avm.getListeVentesAVenirsUtilisateur(no_utilisateur, no_categorie, nom_article);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DES_VENTES_NON_DEBUTEES_EN_MODE_CONNECTE_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DES_VENTES_NON_DEBUTEES_EN_MODE_CONNECTE_ERREUR);
 		}
 		return listeArticlesVendus;
 	}
 	
-	public List<ArticleVendu> selectionnerLesVentesTermineesDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, List<Integer> listeCodesErreur) {
+	public List<ArticleVendu> selectionnerLesVentesTermineesDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article, BusinessException businessException) {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
 		try {
 			listeArticlesVendus = avm.getListeVentesTermineesUtilisateur(no_utilisateur, no_categorie, nom_article);
 		} catch (BusinessException e) {
 			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DES_VENTES_TERMINEES_EN_MODE_CONNECTE_ERREUR);
+			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DES_VENTES_TERMINEES_EN_MODE_CONNECTE_ERREUR);
 		}
 		return listeArticlesVendus;
 	}

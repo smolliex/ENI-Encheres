@@ -1,43 +1,22 @@
-
-.label{
-	
-			width: 150px;
-            display: inline-block;
-            text-align: left;
-            float: left;
+/* Balises*/
+span.h4{
+	margin-left: 10rem !important;
 }
-
-.data {
-            width: 250px;
-            display: inline;
-            display: inline-block;
-            text-align: center;
-            float: right;
+span.h5{
+	margin-left: 1rem !important;
 }
-
-.informations{
-	text-align: center;
+/* Classes*/
+.margin-content{	
+	margin-top: 10rem;
+	margin-left: 15rem !important;
+	margin-right: 15rem !important;
+	margin-bottom: 10rem;
 }
-
-
-main{
-			left-margin : 200px;
-            top-margin : 300px;
-            top-padding : 200 px;
-            left-padding : 200 px;
-	
+/* Ids */
+#link-connect{
+	font-weight: bold;
+	font-size: 1rem !important;
 }
-@media screen and (min-width: 600px) {
-        .col1 {
-          width: 50%;
-          float: left;
-        }
-
-        .col2 {
-          width: 50%;
-          float: right;
-        }
+#link-title{
+	font-weight: bold;
 }
-
-
-

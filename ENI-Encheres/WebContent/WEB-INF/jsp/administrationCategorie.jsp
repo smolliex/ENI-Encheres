@@ -16,7 +16,7 @@
 		<link rel="stylesheet" href="vendor/css/listeEncheres.css">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap_yeti.min.css">
-		<title>Administration - Accueil</title>
+		<title>Administration - Catégorie</title>
 	</head>
 	<body>
 	<header>
@@ -47,63 +47,42 @@
 		<!-- Titre de la page -->
 		<div class="row text-center">
 			<div class="col">
-				<h1 class="my-5">Administration de ENI-Enchères</h1> 
+				<h1 class="my-5">Administration des catégories</h1> 
 			</div>
 		</div>
 		
 		<!-- Liste des catégories -->
-		<h2>Liste des catégories</h2>
-		<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationDesCategories?action=creer">Créer une nouvelle catégorie</a>
-		<table class="table">
-		  <thead>
-		    <tr>
-		      <th scope="col">Numéro</th>
-		      <th scope="col">Libellé</th>
-		      <th scope="col">Actions</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-			<c:if test="${!empty listeCategories}">
-				<c:forEach var="categorie" items="${listeCategories}">
-			    <tr>
-			      <th scope="col">${categorie.no_categorie}</th>
-			      <th scope="col">${categorie.libelle}</th>
-			      <th scope="col">
-			      	<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationDesCategories?action=modifier&categorie=${categorie.no_categorie}">Modifier</a>
-			      	<a class="navbar-brand" href="<%=request.getContextPath()%>/SupprimerCategorie?categorie=${categorie.no_categorie}">Supprimer</a>
-			      </th>
-			    </tr>						
-				</c:forEach>
-			</c:if>
-		  </tbody>
-		</table>
-		<!-- Liste des utilisateurs -->
-		<h2>Liste des utilisateurs</h2>
-		<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationCreerUtilisateur">Créer un nouvel utilisateur</a>
-		<table class="table">
-		  <thead>
-			<tr>
-				<th scope="col">Numéro</th>
-				<th scope="col">Nom Prénom</th>
-				<th scope="col">Actions</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			<c:if test="${!empty listeCategories}">
-				<c:forEach var="utilisateur" items="${listeUtilisateurs}">
-				<tr>
-					<th scope="col">${utilisateur.no_utilisateur}</th>
-					<th scope="col">${utilisateur.nom}   ${utilisateur.prenom}</th>
-					<th scope="col">
-					<a class="navbar-brand" href="<%=request.getContextPath()%>">Désactiver</a>
-					<a class="navbar-brand" href="<%=request.getContextPath()%>//AdministrationUtilisateurSupprimer?utilisateur=${utilisateur.no_utilisateur}">Supprimer</a>
-					</th>
-				</tr>						
-				</c:forEach>
-			</c:if>
-		  </tbody>
-		</table>
-	</main>
-		
+		<div class="container">
+
+		<c:if test="${!empty creer}">
+			<h2>Créer une catégorie</h2>		
+		</c:if>
+		<c:if test="${!empty modifier}">
+			<h2>Modifier cette catégorie</h2>		
+		</c:if>
+
+			<form action="<%=request.getContextPath()%>/AdministrationDesCategories" method="post">
+			  <div class="form-group">
+			    <label for="libelle" class="h5">Libellé :</label>
+			    <input type="text" class="form-control" name="libelle" id="libelle"
+				<c:if test="${!empty creer}">
+					placeholder="libellé"		
+				</c:if>
+				<c:if test="${!empty modifier}">
+					placeholder="${categorie.libelle}"		
+				</c:if>
+				>
+				<c:if test="${!empty creer}">
+					<input id="action" name="action" type="hidden" value="creer">		
+				</c:if>
+				<c:if test="${!empty modifier}">
+					<input id="action" name="action" type="hidden" value="modifier">
+					<input id="categorie" name="categorie" type="hidden" value="${categorie.no_categorie}">		
+				</c:if>
+			  </div>
+			  <button type="submit" class="btn btn-primary font-weight-bold">Enregistrer</button>
+			</form>
+		</div>
+	</main>	
 	</body>
 </html>

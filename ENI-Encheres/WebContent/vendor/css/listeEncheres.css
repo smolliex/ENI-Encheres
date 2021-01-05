@@ -43,7 +43,6 @@ input[type="radio"].radio-checkbox:checked + label::before {
 }
 #link-title{
 	font-weight: bold;
-
 }
 #label-categorie{
 	font-size: 1.5rem !important;

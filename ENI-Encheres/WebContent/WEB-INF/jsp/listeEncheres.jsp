@@ -77,7 +77,7 @@
 		</div>
 		
 		<!-- Lien vers l'administration -->
-		<c:if test="${!empty sessionScope.utilisateur.administrateur}">
+		<c:if test="${!empty sessionScope.utilisateur.administrateur and sessionScope.utilisateur.administrateur == true}">
 			<div class="row">
 				<a class="btn btn-danger font-weight-bold" href="<%=request.getContextPath()%>/Administration" role="button">Administration</a>			
 			</div>

@@ -21,6 +21,14 @@ public abstract class CodesResultatDAL {
 	public static final int SELECT_ARTICLE_ECHEC = 10026;
 	public static final int BUILDER_ARTICLE_ECHEC = 10027;
 	
+	/******* ENCHERES *******/
+	public static final int INSERT_ENCHERE_NULL=10041;
+	public static final int INSERT_ENCHERE_ECHEC=10042;
+	public static final int UPDATE_ENCHERE_ECHEC = 10044;
+	public static final int DELETE_ENCHERE_ECHEC = 10055;
+	public static final int SELECT_ENCHERE_ECHEC = 10046;
+	public static final int BUILDER_ENCHERE_ECHEC = 10047;
+	
 	/******* RETRAITS *******/
 	public static final int INSERT_RETRAIT_NULL=10061;
 	public static final int INSERT_RETRAIT_ECHEC=10062;
@@ -46,8 +54,6 @@ public abstract class CodesResultatDAL {
 	public static final int UPDATE_UTILISATEUR_ECHEC = 10103;
 	public static final int DELETE_UTILISATEUR_ECHEC = 10104;
 	public static final int SELECT_UTILISATEUR_ECHEC = 10105;
-	
-	
 	
 }
 

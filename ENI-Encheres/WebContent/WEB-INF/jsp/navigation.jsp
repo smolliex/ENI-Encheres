@@ -18,7 +18,7 @@
 		<!-- Affichage de liens en mode connecté -->
 		<c:if test="${!empty sessionScope.utilisateur}">
 			<li class="nav-item active">
-			  <a class="nav-link" href="<%=request.getContextPath()%>/ListeEncheres" id="link-connect">Enchères</a>
+			  <a class="nav-link" href="<%=request.getContextPath()%>/ListeEncheres?reset=true" id="link-connect">Enchères</a>
 			</li>					
 			<li class="nav-item active">
 			  <a class="nav-link" href="<%=request.getContextPath()%>/vente" id="link-connect">Vendre un article</a>

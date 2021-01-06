@@ -116,6 +116,9 @@ public class ServletConnexion extends HttpServlet {
 				response.addCookie(password);
 			}
 			session.setAttribute("utilisateur", utilisateur);
+			//Deconnexion au bout de 5 minutes d'inactivité
+			session.setMaxInactiveInterval(300);
+			
 			RequestDispatcher rd = request.getRequestDispatcher("/ListeEncheres");
 			rd.forward(request, response);
 		}

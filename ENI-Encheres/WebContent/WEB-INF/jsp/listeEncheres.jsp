@@ -60,7 +60,7 @@
 			<form class="row mx-md-5" action="<%=request.getContextPath()%>/ListeEncheres" method="post">
 				<div class="col-12 col-md-6 px-md-5">
 					<c:if test="${!empty sessionScope.utilisateur}">
-					<p>L'utilisateur est ${ sessionScope.utilisateur.prenom } ${ sessionScope.utilisateur.nom } !</p>
+					<p>L'utilisateur est ${ sessionScope.utilisateur.prenom } ${ sessionScope.utilisateur.nom } : n° ${ sessionScope.utilisateur.no_utilisateur }!</p>
 					</c:if>
 					<h2 class="my-3">Filtres :</h2>
 					<div class="input-group flex-nowrap">
@@ -173,7 +173,16 @@
 										</div>
 									<div class="col-md-7">
 										<!--Title-->
-										<h3 class="card-title mt-2 mt-md-0"><a href="<%=request.getContextPath()%>/vente?no_article=${enchere.no_article}">${enchere.nom_article}</a></h3>
+										<h3 class="card-title mt-2 mt-md-0">
+										<a href="
+										<c:if test="${enchere.vendeur.no_utilisateur.equals(sessionScope.utilisateur.no_utilisateur)}">
+										<%=request.getContextPath()%>/vente?no_article=${enchere.no_article}
+										</c:if>
+										<c:if test="${!enchere.vendeur.no_utilisateur.equals(sessionScope.utilisateur.no_utilisateur)}">
+										<%=request.getContextPath()%>/enchere?no_article=${enchere.no_article}
+										</c:if>
+										">
+										${enchere.nom_article}</a></h3>
 										<!--Text-->
 										<p class="card-text">Prix: ${enchere.prix_initial}</p>
 										<p class="card-text">Fin de l'enchère: ${enchere.date_fin_encheres}</p>

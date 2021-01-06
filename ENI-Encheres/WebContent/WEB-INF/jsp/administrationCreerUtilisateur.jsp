@@ -58,31 +58,45 @@
 				<div class="row">
 					<div class="form-group col-6">
 					  <label for="pseudo">Pseudo</label>
-					  <input type="text" class="form-control" id="pseudo" name="pseudo">
+					  <input type="text" class="form-control" id="pseudo" name="pseudo"
+						<c:if test="${!empty pseudo}"> placeholder="${pseudo}"</c:if>
+					  >
 					</div>
 					<div class="form-group col-6">
 					  <label for="nom">Nom</label>
-					  <input type="text" class="form-control" id="nom" name="nom">
+					  <input type="text" class="form-control" id="nom" name="nom"
+					  <c:if test="${!empty nom}"> placeholder="${nom}"</c:if>
+					  >
 					</div>
 					<div class="form-group col-6">
 					  <label for="prenom">Prénom</label>
-					  <input type="text" class="form-control" id="prenom" name="prenom">
+					  <input type="text" class="form-control" id="prenom" name="prenom"
+					  <c:if test="${!empty prenom}"> placeholder="${prenom}"</c:if>
+					  >
 					</div>
 					<div class="form-group col-6">
 					  <label for="email">Email</label>
-					  <input type="email" class="form-control" id="email" name="email">
+					  <input type="email" class="form-control" id="email" name="email"
+					  <c:if test="${!empty email}"> placeholder="${email}"</c:if>
+					  >
 					</div>
 					<div class="form-group col-6">
 					  <label for="rue">Rue</label>
-					  <input type="text" class="form-control" id="rue" name="rue">
+					  <input type="text" class="form-control" id="rue" name="rue"
+					  <c:if test="${!empty rue}"> placeholder="${rue}"</c:if>
+					  >
 					</div>
 					<div class="form-group col-6">
 					  <label for="code_postal">Code postal</label>
-					  <input type="text" class="form-control" id="code_postal" name="code_postal">
+					  <input type="text" class="form-control" id="code_postal" name="code_postal"
+					  <c:if test="${!empty code_postal}"> placeholder="${code_postal}"</c:if>
+					  >
 					</div>
 					<div class="form-group col-6">
 					  <label for="ville">Ville</label>
-					  <input type="text" class="form-control" id="ville" name="ville">
+					  <input type="text" class="form-control" id="ville" name="ville"
+					  <c:if test="${!empty ville}"> placeholder="${ville}"</c:if>
+					  >
 					</div>		
 				</div>	
 			  	<button type="submit" class="btn btn-primary font-weight-bold">Enregistrer</button>

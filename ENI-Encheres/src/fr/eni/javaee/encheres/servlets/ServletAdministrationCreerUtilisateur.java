@@ -41,37 +41,53 @@ public class ServletAdministrationCreerUtilisateur extends HttpServlet {
 		
 		// Initialistion de la liste de codes d'erreurs
 		List<Integer> listeCodesErreur = new ArrayList<>();
-		BusinessException businessException = new BusinessException();
 		
-		// Ajout de l'utilisateur
-		Utilisateur utilisateur = new Utilisateur();
-		utilisateur.setPseudo(request.getParameter("pseudo"));
-		utilisateur.setNom(request.getParameter("nom"));
-		utilisateur.setPrenom(request.getParameter("prenom"));
-		utilisateur.setEmail(request.getParameter("email"));
-		utilisateur.setRue(request.getParameter("rue"));
-		utilisateur.setTelephone("0699887766");
-		utilisateur.setCode_postal(request.getParameter("code_postal"));
-		utilisateur.setVille(request.getParameter("ville"));
-		utilisateur.setMot_de_passe("password");
-		utilisateur.setAdministrateur(false);
-		utilisateur.setCredit(0);
+		try {
+			// Ajout de l'utilisateur
+			Utilisateur utilisateur = new Utilisateur();
+			utilisateur.setPseudo(request.getParameter("pseudo"));
+			utilisateur.setNom(request.getParameter("nom"));
+			utilisateur.setPrenom(request.getParameter("prenom"));
+			utilisateur.setEmail(request.getParameter("email"));
+			utilisateur.setRue(request.getParameter("rue"));
+			utilisateur.setTelephone("0699887766");
+			utilisateur.setCode_postal(request.getParameter("code_postal"));
+			utilisateur.setVille(request.getParameter("ville"));
+			utilisateur.setMot_de_passe("password");
+			utilisateur.setAdministrateur(false);
+			utilisateur.setCredit(0);
+			
+			UtilisateurManager um = UtilisateurManager.getInstance();
+			um.ajouterUtilisateur(utilisateur);
+			
+			// Récupération de la liste des catégories
+			List<Categorie> listeCategories = new ArrayList<Categorie>();
+			listeCategories = selectionnerToutesLesCategories();
+			request.setAttribute("listeCategories", listeCategories);
+			
+			// Récupération de la liste des utilisateurs
+			List<Utilisateur> listeUtilisateurs = new ArrayList<Utilisateur>();
+			listeUtilisateurs = selectionnerTousLesUtilisateurs();
+			request.setAttribute("listeUtilisateurs", listeUtilisateurs);
+			
+		} catch (BusinessException e) {
+			// Récupération de la liste des codes d'erreurs
+			for (int err : e.getListeCodesErreur()) {
+				listeCodesErreur.add(err);
+			}
+			System.out.println(listeCodesErreur);
+			request.setAttribute("listeCodesErreur", listeCodesErreur);
+			request.setAttribute("pseudo", request.getParameter("pseudo"));
+			request.setAttribute("nom", request.getParameter("nom"));
+			request.setAttribute("prenom", request.getParameter("prenom"));
+			request.setAttribute("email", request.getParameter("email"));
+			request.setAttribute("rue", request.getParameter("rue"));
+			request.setAttribute("code_postal", request.getParameter("code_postal"));
+			request.setAttribute("ville", request.getParameter("ville"));
+			RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/administrationCreerUtilisateur.jsp");
+			rd.forward(request, response);
+		}
 		
-		creerUtilisateur(utilisateur, businessException);
-		
-		// Récupération de la liste des catégories
-		List<Categorie> listeCategories = new ArrayList<Categorie>();
-		listeCategories = selectionnerToutesLesCategories(businessException);
-		request.setAttribute("listeCategories", listeCategories);
-		
-		// Récupération de la liste des utilisateurs
-		List<Utilisateur> listeUtilisateurs = new ArrayList<Utilisateur>();
-		listeUtilisateurs = selectionnerTousLesUtilisateurs(businessException);
-		request.setAttribute("listeUtilisateurs", listeUtilisateurs);
-		
-		// Récupération de la liste des codes d'erreurs
-		listeCodesErreur = businessException.getListeCodesErreur();
-		request.setAttribute("listeCodesErreur", listeCodesErreur);
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/administration.jsp");
 		rd.forward(request, response);
 		
@@ -81,39 +97,22 @@ public class ServletAdministrationCreerUtilisateur extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 
-	public void creerUtilisateur(Utilisateur utilisateur,BusinessException businessException){	
-			UtilisateurManager um = UtilisateurManager.getInstance();
-			try {
-				um.ajouterUtilisateur(utilisateur);
-			} catch (BusinessException e) {
-				e.printStackTrace();
-				businessException.ajouterErreur(CodesResultatServlets.CREER_UTILISATEUR_ERREUR);		
-			}
+	public void creerUtilisateur(Utilisateur utilisateur) throws BusinessException{
+		UtilisateurManager um = UtilisateurManager.getInstance();
+		um.ajouterUtilisateur(utilisateur);
 	}
 	
-	public List<Categorie> selectionnerToutesLesCategories(BusinessException businessException){
+	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();
-		try {
-			listeCategories = cm.getListeCategories();
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DE_TOUTES_LES_CATEGORIES_ERREUR);
-			
-		}
-
+		listeCategories = cm.getListeCategories();
 		return listeCategories;
 	}
 	
-	public List<Utilisateur> selectionnerTousLesUtilisateurs(BusinessException businessException) {
+	public List<Utilisateur> selectionnerTousLesUtilisateurs() throws BusinessException {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		UtilisateurManager um = UtilisateurManager.getInstance();
-		try {
-			utilisateurs = um.getListeUtilisateurs();
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DES_UTILISATEURS_ERREUR);
-		}
+		utilisateurs = um.getListeUtilisateurs();
 		return utilisateurs;
 	}
 

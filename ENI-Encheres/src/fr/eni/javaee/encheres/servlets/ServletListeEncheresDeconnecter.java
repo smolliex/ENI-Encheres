@@ -48,19 +48,25 @@ public class ServletListeEncheresDeconnecter extends HttpServlet {
 		
 		// Initialistion de la liste de codes d'erreurs
 		List<Integer> listeCodesErreur = new ArrayList<>();
+		
+		try {
+			// Récupération de la liste des catégories
+			List<Categorie> listeCategories = new ArrayList<Categorie>();
+			listeCategories = selectionnerToutesLesCategories();
+			request.setAttribute("listeCategories", listeCategories);
 			
-		// Récupération de la liste des catégories
-		List<Categorie> listeCategories = new ArrayList<Categorie>();
-		listeCategories = selectionnerToutesLesCategories(listeCodesErreur);
-		request.setAttribute("listeCategories", listeCategories);
-		
-		// Récupération de la liste de toutes les enchères en cours
-		List<ArticleVendu> listeDeToutesLesEncheresEnCours = new ArrayList<ArticleVendu>();		
-		listeDeToutesLesEncheresEnCours = selectionnerToutesLesEncheresEnCours(-1, "", listeCodesErreur);
-		request.setAttribute("liste", listeDeToutesLesEncheresEnCours);
-		
-		// Récupération de la liste des codes d'erreurs
-		request.setAttribute("listeCodesErreur", listeCodesErreur);
+			// Récupération de la liste de toutes les enchères en cours
+			List<ArticleVendu> listeDeToutesLesEncheresEnCours = new ArrayList<ArticleVendu>();		
+			listeDeToutesLesEncheresEnCours = selectionnerToutesLesEncheresEnCours(-1, "");
+			request.setAttribute("liste", listeDeToutesLesEncheresEnCours);	
+			
+		} catch (BusinessException e) {
+			// Récupération de la liste des codes d'erreurs
+			for (int err : e.getListeCodesErreur()) {
+				listeCodesErreur.add(err);
+			}
+			request.setAttribute("listeCodesErreur", listeCodesErreur);
+		}
 		
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/listeEncheres.jsp");
 		rd.forward(request, response);
@@ -70,29 +76,19 @@ public class ServletListeEncheresDeconnecter extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 	
-	public List<Categorie> selectionnerToutesLesCategories(List<Integer> listeCodesErreur){
+	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
-		CategorieManager cm = CategorieManager.getInstance();
-		try {
-			listeCategories = cm.getListeCategories();
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DE_TOUTES_LES_CATEGORIES_ERREUR);
-			
-		}
+		CategorieManager cm = CategorieManager.getInstance();	
+		listeCategories = cm.getListeCategories();
+
 
 	return listeCategories;
 	}
 	
-	public List<ArticleVendu> selectionnerToutesLesEncheresEnCours(int noCategorie,String nomArticle, List<Integer> listeCodesErreur){
+	public List<ArticleVendu> selectionnerToutesLesEncheresEnCours(int noCategorie,String nomArticle) throws BusinessException{
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
-		try {
-			listeArticlesVendus = avm.getListeEncheresEncoursToutes(noCategorie,nomArticle);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			listeCodesErreur.add(CodesResultatServlets.SELECTION_DE_TOUTES_LES_ENCHERES_EN_COURS_ERREUR);
-		}
+		listeArticlesVendus = avm.getListeEncheresEncoursToutes(noCategorie,nomArticle);
 		return listeArticlesVendus;
 	}
 

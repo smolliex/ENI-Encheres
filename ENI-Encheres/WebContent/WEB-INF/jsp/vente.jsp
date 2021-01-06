@@ -46,7 +46,7 @@
 					<c:if test="${!empty ListeLibellesErreurs}">
 						<div class="alert alert-danger" role="alert">
 							<c:forEach var="e" items="${ListeLibellesErreurs}">
-								${e}
+								${e}<br>
 							</c:forEach>
 						</div>
 					</c:if>

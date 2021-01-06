@@ -41,8 +41,15 @@
 					<c:if test="${!empty ListeLibellesErreurs}">
 						<div class="alert alert-danger" role="alert">
 							<c:forEach var="e" items="${ListeLibellesErreurs}">
-								${e}
+								${e}<br>
 							</c:forEach>
+						</div>
+					</c:if>
+							
+					<!-- Messages de confirmation -->
+					<c:if test="${!empty confirmation}">
+						<div class="alert alert-success" role="alert">
+							${confirmation}
 						</div>
 					</c:if>
 					
@@ -50,7 +57,14 @@
 					<div class="text-left">
 						<c:if test="${!empty article}">
 							<form name="formSaisie" method="post" action="${pageContext.request.contextPath}/enchere">
-								
+												
+								<% 
+								String disabled="";
+								if(!(Boolean)request.getAttribute("isModifiable")) {
+									disabled="disabled";
+								}
+								%>
+							
 								<div class="row">
 									
 									<!-- image -->
@@ -61,16 +75,19 @@
 											<div>
 												<img class="card-img-left img-fluid" src="https://via.placeholder.com/250x150" alt="image">
 											</div>
-											
 										</div>
+										<c:if test="${!empty position}">
+											<div class="position">
+												${position}
+											</div>
+										</c:if>
 									</div>
 				
 									<!-- inputs -->
 									<div class="col-md-8">
 															
 										<input type="hidden" id="no_article" name="no_article" value="${article.no_article}">
-										<input type="hidden" id="isModifiable" name="isModifiable" value="${isModifiable}">
-	
+
 										<div>
 											<h3>${article.nom_article}</h3>
 											<div class="card">
@@ -79,11 +96,11 @@
 													<label>Description :</label>
 													<span>${article.description}</span>
 												</div>		
-																					
+																		
 												<div>
 													<label>Meilleure offre :</label>
-													<span class="prix">[prix] points</span>
-													<span>par [pseudo]</span>
+													<span class="prix">${article.prix_vente} points</span>
+													<span>${encherisseur}</span>
 												</div>
 																					
 												<div>
@@ -91,6 +108,11 @@
 													<span>${article.prix_initial} points</span>
 												</div>		
 																				
+												<div>
+													<label>Début de l'enchère :</label>
+													<span>${article.date_debut_encheres}</span>
+												</div>			
+																															
 												<div>
 													<label>Fin de l'enchère :</label>
 													<span>${article.date_fin_encheres}</span>
@@ -114,11 +136,16 @@
 												</div>		
 												
 												<div>
-													<label for="prix_vente">Ma proposition :</label>
-													<input type="number" id="prix_vente" name="prix_vente" value="${article.prix_vente}" min="${article.prix_vente}" max="10000" step="5" disabled>
-													<label>Points</label>
+													<c:if test="${isModifiable}">	
+														<div>
+															<hr>
+															<label for="prix_vente">Ma proposition :</label>
+															<input type="number" id="prix_vente" name="prix_vente" value="${article.prix_vente}" min="${article.prix_vente}" max="10000" step="5"  <%=disabled %>>
+															<label>Points</label>
+														</div>
+														<button type="submit" class="btn btn-primary btn-md">Enchérir</button>
+													</c:if>
 												</div>
-													
 											</div>
 										</div>
 																																		
@@ -129,13 +156,13 @@
 								<!-- bouton -->
 								<div class="row text-center">
 									<div class="col">
-										<c:if test="${isModifiable}">	
-											<button type="submit" class="btn btn-primary btn-md">Enchérir</button>
-										</c:if>
-										
-										<c:if test ="${isModifiable}">
-											<button type="button" class="btn btn-primary btn-md">Retrait effectué</button>
-										</c:if>
+										<p>
+											<!-- 
+											<c:if test ="${isModifiable}">
+												<button type="button" class="btn btn-primary btn-md">Retrait effectué</button>
+											</c:if>
+											-->
+										</p>
 									</div>
 								</div>							
 							</form>

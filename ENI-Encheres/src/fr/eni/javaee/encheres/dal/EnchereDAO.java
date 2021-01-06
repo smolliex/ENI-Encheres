@@ -9,4 +9,6 @@ public interface EnchereDAO extends DAO<Enchere>{
 
 	List<Enchere> selectByArticle(int no_article) throws BusinessException;
 
+	Enchere selectByTopArticle(int no_article) throws BusinessException;
+
 }

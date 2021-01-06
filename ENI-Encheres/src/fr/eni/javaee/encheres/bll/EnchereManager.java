@@ -35,6 +35,10 @@ public class EnchereManager {
 	public List<Enchere> getListeEncheres(int no_article) throws BusinessException {
 		return DAOEnchere.selectByArticle(no_article);
 	}
+
+	public Enchere getMeilleureEnchere(int no_article) throws BusinessException {
+		return DAOEnchere.selectByTopArticle(no_article);
+	}
 	
 	public Enchere getEnchere(int no_article) throws BusinessException {
 		return DAOEnchere.selectById(no_article);
@@ -137,6 +141,7 @@ public class EnchereManager {
 	private void validerMontant (int montant_enchere, ArticleVendu articleVendu, Utilisateur encherisseur, BusinessException businessException) {
 		
 		// Controle credit encherisseur
+		/* à remettre qd le credit sera géré
 		try {
 			UtilisateurManager utilisateurManager = UtilisateurManager.getInstance();
 			if(utilisateurManager.getUtilisateur(encherisseur.getNo_utilisateur()) != null) {
@@ -149,6 +154,7 @@ public class EnchereManager {
 		} catch (BusinessException e) {
 			businessException.ajouterErreur(CodesResultatBLL.REGLE_ENCHERE_UTILISATEUR_INCONNU);
 		}
+		*/
 		
 		// Controle le montant de l'enchere
 		ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
@@ -156,8 +162,10 @@ public class EnchereManager {
 		
 		try {
 			article = articleVenduManager.getArticleVendu(articleVendu.getNo_article());
-			if(article != null) {
-				if(montant_enchere <= articleVendu.getPrix_initial() || montant_enchere <= articleVendu.getPrix_vente() )
+			if(article != null) {			
+				if(montant_enchere <= article.getPrix_initial() 
+					|| (article.getPrix_vente()>0 && montant_enchere <= article.getPrix_vente()) 
+				)
 				{
 					businessException.ajouterErreur(CodesResultatBLL.REGLE_ENCHERE_INSUFFISANTE);
 				}

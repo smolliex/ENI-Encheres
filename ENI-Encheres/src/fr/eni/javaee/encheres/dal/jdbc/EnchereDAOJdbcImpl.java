@@ -23,6 +23,7 @@ public class EnchereDAOJdbcImpl implements EnchereDAO{
 	private static Logger logger = ErrorLogger.getLogger("EnchereDAOJdbcImpl");
 	
 	private static final String SQL_SELECT_BY_ARTICLE="SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_article=? ORDER BY date_enchere;";
+	private static final String SQL_SELECT_BY_TOP_ARTICLE="SELECT TOP 1 no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_article=? ORDER BY montant_enchere DESC;";
 	private static final String SQL_SELECT_ALL="SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES ORDER BY no_article, no_utilisateur;";
 	private static final String SQL_INSERT=""
 			+ "BEGIN TRANSACTION; "
@@ -58,6 +59,32 @@ public class EnchereDAOJdbcImpl implements EnchereDAO{
 		return liste;
 	}
 	
+	@Override
+	public Enchere selectByTopArticle(int no_article) throws BusinessException {
+		// renvoie la meilleure enchère de l'article
+		
+		Enchere enchere = null;
+		
+		try(Connection cn=ConnectionProvider.getConnection())
+		{
+			PreparedStatement stmt = cn.prepareStatement(SQL_SELECT_BY_TOP_ARTICLE);
+			stmt.setInt(1,no_article);
+			ResultSet rs=stmt.executeQuery();
+			if (rs.next()) {
+				enchere=new Enchere();
+				enchere=enchereBuilder(rs);
+			}
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.severe(e.getMessage());
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultatDAL.SELECT_ENCHERE_ECHEC);
+			throw businessException;
+		}
+		
+		return enchere;
+	}
 	@Override
 	public List<Enchere> selectAll() throws BusinessException {
 		

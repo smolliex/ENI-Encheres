@@ -28,10 +28,11 @@ public class ServletConnexion extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
 		String identifiant = null;
 		String mot_de_passe = null;
+		//Récupération des cookies éventuels
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
@@ -57,21 +58,26 @@ public class ServletConnexion extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//gestion de la connexion avec un cookie si "seRappeler" est sélectionné
+		//gestion de la connexion 
+		request.setCharacterEncoding("UTF-8");
+		List<Integer> listeCodesErreur = new ArrayList<>();
+		//Récupération des informations de connexion
 		HttpSession session = request.getSession();
 		Utilisateur utilisateur = new Utilisateur();
 		String identifiant = request.getParameter("identifiant");
 		String mot_de_passe = request.getParameter("mot_de_passe");
+		//Récupération de l'utilisateur, soit par pseudo, soit par email.
 		UtilisateurManager manager = new UtilisateurManager();
 		if (identifiant.contains("@")){
 			utilisateur.setEmail(identifiant);
 			try {
-				
 				utilisateur = manager.getUtilisateurByEmail(identifiant);
 			} catch (BusinessException e) {
-				BusinessException businessException = new BusinessException();
-				businessException.ajouterErreur(CodesResultatServlets.UTILISATEUR_INCONNU);
+				for (int err : e.getListeCodesErreur()) {
+					listeCodesErreur.add(err);
+				}
 				e.printStackTrace();
+				request.setAttribute("listeCodesErreur", listeCodesErreur);
 			}
 		}
 		else{
@@ -80,15 +86,19 @@ public class ServletConnexion extends HttpServlet {
 				
 				utilisateur = manager.getUtilisateurByPseudo(identifiant);
 			} catch (BusinessException e) {
-				BusinessException businessException = new BusinessException();
-				businessException.ajouterErreur(CodesResultatServlets.UTILISATEUR_INCONNU);
+				for (int err : e.getListeCodesErreur()) {
+					listeCodesErreur.add(err);
+				}
 				e.printStackTrace();
+				request.setAttribute("listeCodesErreur", listeCodesErreur);
 			}
 		}
-		
+		//Vérification de la validité du mot de passe
 		if(!mot_de_passe.equals(utilisateur.getMot_de_passe())){
-			BusinessException businessException = new BusinessException();
-			businessException.ajouterErreur(CodesResultatServlets.MOT_DE_PASSE_INCORRECT);
+			listeCodesErreur.add(CodesResultatServlets.MOT_DE_PASSE_INCORRECT);
+			request.setAttribute("listeCodesErreur", listeCodesErreur);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/connexion.jsp");
+			rd.forward(request, response);
 		}else {
 			//Création de cookies si "se souvenir" est coché
 			if(request.getParameter("SeSouvenir") == "OK") {

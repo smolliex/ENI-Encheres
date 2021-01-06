@@ -1,6 +1,8 @@
 package fr.eni.javaee.encheres.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,6 +30,9 @@ public class ServletProfil extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		List<Integer> listeCodesErreur = new ArrayList<>();
+		//Si accès via lien "Mon Profil"
 		if(request.getServletPath().equals("/mon_profil"))
 		{
 			HttpSession session = request.getSession();
@@ -38,10 +43,13 @@ public class ServletProfil extends HttpServlet {
 				user = manager.getUtilisateur(id);
 				request.setAttribute("user", user);
 			} catch (BusinessException e) {
+				for (int err : e.getListeCodesErreur()) {
+					listeCodesErreur.add(err);
+				}
 				e.printStackTrace();
-				BusinessException businessException = new BusinessException(); 
-				businessException.ajouterErreur(CodesResultatServlets.SELECTION_UTILISATEUR_ERREUR);
+				request.setAttribute("listeCodesErreur", listeCodesErreur);
 			}
+		//Si accès via lien vers vendeurs	
 		}else {
 			int no_utilisateur = Integer.parseInt(request.getParameter("user"));
 			UtilisateurManager manager = new UtilisateurManager();
@@ -50,9 +58,11 @@ public class ServletProfil extends HttpServlet {
 				user = manager.getUtilisateur(no_utilisateur);
 				request.setAttribute("user", user);
 			} catch (BusinessException e) {
-				BusinessException businessException = new BusinessException();
-				businessException.ajouterErreur(CodesResultatServlets.SELECTION_UTILISATEUR_ERREUR);
+				for (int err : e.getListeCodesErreur()) {
+					listeCodesErreur.add(err);
+				}
 				e.printStackTrace();
+				request.setAttribute("listeCodesErreur", listeCodesErreur);
 			}
 		}
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/profil.jsp");

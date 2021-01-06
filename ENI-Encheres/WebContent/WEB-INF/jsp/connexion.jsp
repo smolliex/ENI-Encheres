@@ -23,17 +23,14 @@
 
 <body>
     <!-- Entete de page -->
-    <header>
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary static-top">
-            <div class="container">
-                <a class="navbar-brand" href="#">ENI Enchères</a>
-            </div>
-        </nav>
-
-    </header>
-   
+	<header>
+		
+		<!-- Navigation -->
+		<%@include file="navigation.jsp" %>
+	
+	</header>
+	
+	<!--  Corps de la page  -->
     <main class="container-fluid">
         <div class="row text-center">
             <div class="col">
@@ -81,5 +78,12 @@
     </div>
     </main>
 
+<!-- Pied de page -->
+	<%@include file="pied_de_page.jsp" %>
+	
+	<!-- Placed at the end of the document so the pages load faster -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -20,8 +20,10 @@ import javax.servlet.http.HttpSession;
 
 import fr.eni.javaee.encheres.bll.ArticleVenduManager;
 import fr.eni.javaee.encheres.bll.CategorieManager;
+import fr.eni.javaee.encheres.bll.RetraitManager;
 import fr.eni.javaee.encheres.bo.ArticleVendu;
 import fr.eni.javaee.encheres.bo.Categorie;
+import fr.eni.javaee.encheres.bo.Retrait;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.messages.BusinessException;
 import fr.eni.javaee.encheres.messages.LecteurMessage;
@@ -31,6 +33,7 @@ import fr.eni.javaee.encheres.messages.LecteurMessage;
  * Servlet implementation class ServletArticle
  */
 @WebServlet("/vente")
+
 public class ServletVente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -40,6 +43,7 @@ public class ServletVente extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		List<Integer> listeCodesErreur = new ArrayList<>();
+		Retrait retrait = null;
 		
 		try {
 			
@@ -50,22 +54,40 @@ public class ServletVente extends HttpServlet {
 			{
 				// charge l'article 
 				ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
-				ArticleVendu articleVendu = null;
-				articleVendu = articleVenduManager.getArticleVendu(no_article);
+				ArticleVendu articleVendu = articleVenduManager.getArticleVendu(no_article);
 				if(articleVendu==null) {
 					listeCodesErreur.add(CodesResultatServlets.VENTE_INCONNUE);
+				}else {
+					request.setAttribute("article", articleVendu);
+					
+					// charge l'adresse de retrait
+					RetraitManager retraitManager = RetraitManager.getInstance();
+					retrait = retraitManager.getRetrait(articleVendu.getNo_article());
+					
+				}
+
+				request.setAttribute("isModifiable", isModifiable(articleVendu));
+				request.setAttribute("isAnnulable", isAnnulable(articleVendu));
+				
+			}else
+			{	
+				// récupere l'adresse de retrait dans la fiche utilisateur du vendeur
+				Utilisateur utilisateur = null;
+				HttpSession session=request.getSession();
+				if(session.getAttribute("utilisateur")!=null) {
+					utilisateur = (Utilisateur)session.getAttribute("utilisateur");
+					retrait = new Retrait();
+					retrait.setRue(utilisateur.getRue());
+					retrait.setCode_postal(utilisateur.getCode_postal());
+					retrait.setVille(utilisateur.getVille());
 				}
 				
-				// transmet à la page
-				request.setAttribute("article", articleVendu);
-				request.setAttribute("isModifiable", isModifiable(articleVendu));
-				request.setAttribute("isSupprimable", isSupprimable(articleVendu));
-			}else
-			{
+				// passe les attributs à la page
 				request.setAttribute("isModifiable", Boolean.TRUE);
-				request.setAttribute("isSupprimable", Boolean.FALSE);
+				request.setAttribute("isAnnulable", Boolean.FALSE);
 			}
 			
+			request.setAttribute("retrait", retrait);
 			request.setAttribute("dateDuJour", dateDuJour());
 			request.setAttribute("categories", listeCategories(listeCodesErreur));
 			
@@ -93,21 +115,45 @@ public class ServletVente extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		
 		List<Integer> listeCodesErreur = new ArrayList<>();
+		
 		ArticleVendu articleVendu = null;
+		Retrait retrait = null;
+		ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
+		RetraitManager retraitManager = RetraitManager.getInstance();
+		
+		Boolean modifiable = Boolean.FALSE;
+		Boolean annulable = Boolean.FALSE;
 		
 		try {
 			
-			// Récupère les valeurs du formulaire
-			articleVendu = recupererSaisieArticle(request, listeCodesErreur);
-			
-			// controle et enregistre
-			ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
-			
-			if (articleVendu.getNo_article()>0) {
-				articleVenduManager.updateArticleVendu(articleVendu);
+			if(lireParametreInt(request, "supprimer", listeCodesErreur)==0) {
+
+				// Récupère les valeurs du formulaire
+				articleVendu = recupererSaisieArticle(request, response, listeCodesErreur);
+				
+				retrait = recupererSaisieRetrait(request, listeCodesErreur);
+				retrait.setArticle(articleVendu);
+				
+				modifiable = lireParametreBoolean(request, "isModifiable", listeCodesErreur);
+				annulable = lireParametreBoolean(request, "isAnnulable", listeCodesErreur);
+				
+				// controle et enregistre l'article vendu et l'adresse de retrait
+				if (articleVendu.getNo_article()>0) {
+					articleVenduManager.updateArticleVendu(articleVendu);
+					retraitManager.updateRetrait(retrait);
+				}else
+				{
+					articleVenduManager.createArticleVendu(articleVendu);
+					retrait.getArticle().setNo_article(articleVendu.getNo_article());
+					retraitManager.createRetrait(retrait);
+				}
 			}else
 			{
-				articleVenduManager.createArticleVendu(articleVendu);
+				// supprime la vente
+				int no_article = lireParametreInt(request, "no_article", listeCodesErreur);
+				if(no_article>0) {
+					articleVenduManager.deleteArticleVendu(no_article);
+				}
 			}
 			
 		} catch (BusinessException e) {
@@ -122,8 +168,9 @@ public class ServletVente extends HttpServlet {
 			request.setAttribute("dateMin", dateDuJour());
 			request.setAttribute("categories", listeCategories(listeCodesErreur));
 			request.setAttribute("article", articleVendu);
-			request.setAttribute("isModifiable", Boolean.TRUE);
-			request.setAttribute("isSupprimable", isSupprimable(articleVendu));
+			request.setAttribute("retrait", retrait);
+			request.setAttribute("isModifiable", modifiable);
+			request.setAttribute("isAnnulable", annulable);
 			request.setAttribute("ListeLibellesErreurs",ListeLibellesErreurs(listeCodesErreur));
 			
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/vente.jsp");			
@@ -144,6 +191,24 @@ public class ServletVente extends HttpServlet {
 			if(request.getParameter(parametre)!=null && !request.getParameter(parametre).isEmpty())
 			{
 				valeur = Integer.parseInt(request.getParameter(parametre));
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			e.printStackTrace();
+			listeCodesErreur.add(CodesResultatServlets.LECTURE_PARAMETRE_VENTE);
+		}
+		return valeur;
+	}
+	
+	private Boolean lireParametreBoolean(HttpServletRequest request, String parametre, List<Integer> listeCodesErreur) {
+		// Renvoie la valeur du parametre de type Boolean
+		Boolean valeur=Boolean.FALSE;
+		try
+		{
+			if(request.getParameter(parametre)!=null && !request.getParameter(parametre).isEmpty())
+			{
+				valeur = Boolean.parseBoolean(request.getParameter(parametre));
 			}
 		}
 		catch(NumberFormatException e)
@@ -184,7 +249,7 @@ public class ServletVente extends HttpServlet {
 		return valeur;
 	}
 	
-	private ArticleVendu recupererSaisieArticle(HttpServletRequest request, List<Integer> listeCodesErreur) {
+	private ArticleVendu recupererSaisieArticle(HttpServletRequest request, HttpServletResponse response, List<Integer> listeCodesErreur) throws ServletException, IOException {
 		
 		//recupere les parametres du formulaire
 		int no_article = lireParametreInt(request, "no_article", listeCodesErreur);
@@ -192,19 +257,19 @@ public class ServletVente extends HttpServlet {
 		Utilisateur vendeur=null;
 		
 		String no_utilisateur = lireParametreString(request, "no_utilisateur", listeCodesErreur);
-		
-/// en attendant d'avoir la session utilisateur //////////////////////////
-vendeur=new Utilisateur();
-vendeur.setNo_utilisateur(3);
-//////////////////////////////////////////////////////////////
+
 
 		if(no_utilisateur==null || no_utilisateur.isEmpty()) {
 			// Le vendeur est l'utilisateur connecté
 			HttpSession session=request.getSession();
 			if(session.getAttribute("utilisateur")!=null) {
 				vendeur = (Utilisateur)session.getAttribute("utilisateur");
+			}else
+			{
+				// demande à l'utilisateur de se connecter
+				RequestDispatcher rd = request.getRequestDispatcher("/connection");			
+				rd.forward(request, response);
 			}
-
 			
 		}else
 		{
@@ -237,6 +302,22 @@ vendeur.setNo_utilisateur(3);
 		return articleVendu;
 	}
 	
+	private Retrait recupererSaisieRetrait(HttpServletRequest request, List<Integer> listeCodesErreur) {
+		
+		//recupere les parametres du formulaire
+		String rue = lireParametreString(request, "rue", listeCodesErreur);
+		String code_postal = lireParametreString(request, "code_postal", listeCodesErreur);
+		String ville = lireParametreString(request, "ville", listeCodesErreur);
+		
+		//construit le retrait
+		Retrait retrait = new Retrait();	
+		retrait.setRue(rue);
+		retrait.setCode_postal(code_postal);
+		retrait.setVille(ville);
+		
+		return retrait;
+	}
+	
 	private List<String> ListeLibellesErreurs (List<Integer> listeCodesErreur){
 		List<String> liste=new ArrayList<>();
 		if(listeCodesErreur.size()>0)
@@ -265,12 +346,11 @@ vendeur.setNo_utilisateur(3);
 		return categories;
 	}
 	
-	private Boolean isModifiable (ArticleVendu articleVendu) {
+	private Boolean isModifiable(ArticleVendu articleVendu) {
 		Boolean modifiable = Boolean.FALSE;
 		if(articleVendu!=null) {
 			LocalDate today = LocalDate.now(); 
-			if(	   (today.isEqual(articleVendu.getDate_debut_encheres()) || today.isAfter(articleVendu.getDate_debut_encheres()))
-				&& (today.isEqual(articleVendu.getDate_fin_encheres()) || today.isBefore(articleVendu.getDate_fin_encheres()))) 
+			if( today.isBefore(articleVendu.getDate_debut_encheres()) ) 
 			{
 				modifiable = Boolean.TRUE;
 			}			
@@ -278,15 +358,15 @@ vendeur.setNo_utilisateur(3);
 		return modifiable;
 	}
 	
-	private Boolean isSupprimable (ArticleVendu articleVendu) {
-		Boolean supression = Boolean.FALSE;
+	private Boolean isAnnulable(ArticleVendu articleVendu) {
+		Boolean annulable = Boolean.FALSE;
 		if(articleVendu!=null) {
-			if( isModifiable(articleVendu) && articleVendu.getPrix_vente()==0 ) 
+			if(articleVendu.getNo_article()>0 && isModifiable(articleVendu) ) 
 			{
-				supression = Boolean.TRUE;
-			}
+				annulable = Boolean.TRUE;
+			}			
 		}
-		return supression;
+		return annulable;
 	}
 	
 }

@@ -22,7 +22,7 @@ public class RetraitDAOJdbcImpl implements RetraitDAO{
 	
 	private static final String SQL_SELECT_BY="SELECT no_article, rue, code_postal, ville FROM RETRAITS WHERE no_article=?;";
 	private static final String SQL_SELECT_ALL="SELECT no_article, rue, code_postal, ville FROM RETRAITS ORDER BY no_article;";
-	private static final String SQL_INSERT="INSERT INTO RETRAITS (rue, code_postal, ville) VALUES (?,?,?);";
+	private static final String SQL_INSERT="INSERT INTO RETRAITS (no_article, rue, code_postal, ville) VALUES (?,?,?,?);";
 	private static final String SQL_UPDATE="UPDATE RETRAITS SET rue=?, code_postal=?, ville=? WHERE no_article=?;";
 	private static final String SQL_DELETE="DELETE FROM RETRAITS WHERE no_article=?;";
 	
@@ -105,16 +105,16 @@ public class RetraitDAOJdbcImpl implements RetraitDAO{
 		
 	}
 
-
 	@Override
 	public void insert(Retrait obj) throws BusinessException {
 
 		try(Connection cn=ConnectionProvider.getConnection())
 		{
 			PreparedStatement stmt = cn.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, obj.getRue());
-			stmt.setString(2, obj.getCode_postal());
-			stmt.setString(3, obj.getVille());
+			stmt.setInt(1, obj.getArticle().getNo_article());
+			stmt.setString(2, obj.getRue());
+			stmt.setString(3, obj.getCode_postal());
+			stmt.setString(4, obj.getVille());
 			stmt.executeUpdate();
 			
 			ResultSet rs = stmt.getGeneratedKeys();

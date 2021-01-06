@@ -4,13 +4,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import fr.eni.javaee.encheres.bo.ArticleVendu;
 import fr.eni.javaee.encheres.dal.ArticleVenduDAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
 import fr.eni.javaee.encheres.messages.BusinessException;
-import fr.eni.javaee.encheres.utils.ErrorLogger;
 
 public class ArticleVenduManager {
 	
@@ -119,15 +117,52 @@ public class ArticleVenduManager {
 	}
 	
 	public void deleteArticleVendu(int no_article) throws BusinessException {
-		try {
-			DAOArticleVendu.delete(no_article);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		BusinessException businessException = new BusinessException();
+		
+		this.validerSuppression(no_article, businessException);
+		
+		if(!businessException.hasErreurs()) {
+
+			try {
+				
+				// supprime l'article
+				DAOArticleVendu.delete(no_article);
+				
+				// supprime l'adresse de retrait
+				RetraitManager retraitManager = RetraitManager.getInstance();
+				retraitManager.deleteRetrait(no_article);
+				
+			} catch (Exception e) {
+				throw businessException;
+			}
+			
 		}
+		else
+		{
+			throw businessException;
+		}
+		
 	}
 
 	// Controles metiers
+	
+	private void validerSuppression (int no_article, BusinessException businessException) {
+		
+		try {
+			ArticleVendu articleVendu = DAOArticleVendu.selectById(no_article);
+			if (articleVendu!=null) {
+				Date date = new Date();
+				LocalDate today = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				if (articleVendu.getDate_debut_encheres().isBefore(today)) {
+					businessException.ajouterErreur(CodesResultatBLL.REGLE_ARTICLE_ENCHERE_EN_COURS);
+				}
+			}
+		} catch (Exception e) {
+			businessException.ajouterErreur(CodesResultatBLL.REGLE_ARTICLE_SUPPRIMER);
+		}
+		
+	}
 	
 	private void validerNom (String nom, BusinessException businessException) {
 		if(nom==null || nom.trim().length()==0)

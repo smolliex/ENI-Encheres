@@ -21,6 +21,15 @@ public abstract class CodesResultatBLL {
 	public static final int REGLE_ARTICLE_SUPPRIMER = 20033;
 	public static final int REGLE_ARTICLE_ENCHERE_EN_COURS = 20034;
 	
+	/******* ENCHERES  *******/
+	public static final int REGLE_ENCHERE_ARTICLE_INCONNU = 20041;
+	public static final int REGLE_ENCHERE_UTILISATEUR_INCONNU = 20042;
+	public static final int REGLE_ENCHERE_DATE_MANQUANTE = 20043;
+	public static final int REGLE_ENCHERE_DATE_INVALIDE = 20044;
+	public static final int REGLE_ENCHERE_ARTICLE_INTROUVABLE = 20045;
+	public static final int REGLE_ENCHERE_CREDIT_INSUFFISANT = 20046;
+	public static final int REGLE_ENCHERE_INSUFFISANTE = 20047;
+	
 	/******* RETRAITS  *******/
 	public static final int REGLE_RETRAIT_ARTICLE_INCONNU = 20061;
 	public static final int REGLE_RETRAIT_RUE_MANQUANT = 20062;

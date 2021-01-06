@@ -78,6 +78,8 @@ public class ServletConnexion extends HttpServlet {
 				}
 				e.printStackTrace();
 				request.setAttribute("listeCodesErreur", listeCodesErreur);
+				RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/connexion.jsp");
+				rd.forward(request, response);
 			}
 		}
 		else{
@@ -91,6 +93,8 @@ public class ServletConnexion extends HttpServlet {
 				}
 				e.printStackTrace();
 				request.setAttribute("listeCodesErreur", listeCodesErreur);
+				RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/connexion.jsp");
+				rd.forward(request, response);
 			}
 		}
 		//Vérification de la validité du mot de passe

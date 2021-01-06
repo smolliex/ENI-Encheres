@@ -9,6 +9,8 @@ public abstract class CodesResultatServlets {
 	public static final int MOTS_DE_PASSE_DIFFERENTS = 30001;
 	public static final int MOT_DE_PASSE_INCORRECT = 30002;
 	public static final int UTILISATEUR_INCONNU = 30003;
+	//Renvoi de mot de passe
+	public static final int ADRESSE_EMAIL_INCONNUE = 30004;
 	
 	// Encheres
 	public static final int LECTURE_PARAMETRE_ENCHERE = 30041;
@@ -33,5 +35,6 @@ public abstract class CodesResultatServlets {
 	
 	// Administration
 	public static final int SELECTION_DES_UTILISATEURS_ERREUR = 30700;
+	
 	
 }

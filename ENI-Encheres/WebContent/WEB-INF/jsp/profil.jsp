@@ -78,7 +78,8 @@
 					</div>
 				</div>
 			</c:if>		
-		</div>
+		<br>
+		
 	</main>
 	
 	<!-- Pied de page -->

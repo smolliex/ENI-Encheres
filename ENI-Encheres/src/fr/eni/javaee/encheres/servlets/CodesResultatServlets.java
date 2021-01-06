@@ -10,10 +10,13 @@ public abstract class CodesResultatServlets {
 	public static final int MOT_DE_PASSE_INCORRECT = 30002;
 	public static final int UTILISATEUR_INCONNU = 30003;
 	
+	// Encheres
+	public static final int LECTURE_PARAMETRE_ENCHERE = 30041;
+	public static final int ENCHERE_MODIFIABLE = 30042;
+	
 	// Ventes
 	public static final int LECTURE_PARAMETRE_VENTE = 30100;
 	public static final int VENTE_INCONNUE = 30101;
-	
 	
 	// Liste Encheres
 	public static final int SELECTION_DE_TOUTES_LES_CATEGORIES_ERREUR = 30600;

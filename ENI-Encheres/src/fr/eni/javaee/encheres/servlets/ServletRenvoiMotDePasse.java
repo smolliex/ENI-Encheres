@@ -49,7 +49,8 @@ public class ServletRenvoiMotDePasse extends HttpServlet {
 				if(contact.equals(email)) {
 					mdp = utilisateur.getMot_de_passe();
 					
-					 /* Create mailer.
+					//Procédé pour envoyer un mail -- voir javamail
+					/* Create mailer.
 			        String hostname = "smtp.example.com";
 			        int port = 2525;
 			        String username = "nobody";

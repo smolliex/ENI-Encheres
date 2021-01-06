@@ -68,43 +68,23 @@ public class ServletAdministrationCategorieSupprimer extends HttpServlet {
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 
 	public void supprimerUneCategorie(int categorie) throws BusinessException{
-		BusinessException businessException = new BusinessException();
 		CategorieManager cm = CategorieManager.getInstance();
-		try {
-			cm.deleteCategorie(categorie);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			businessException.ajouterErreur(CodesResultatServlets.SUPPRIMER_CATEGORIE_ERREUR);	
-			throw businessException;
-		}
+		cm.deleteCategorie(categorie);
 	}
 	
 	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
-		BusinessException businessException = new BusinessException();
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();
-		try {
-			listeCategories = cm.getListeCategories();
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DE_TOUTES_LES_CATEGORIES_ERREUR);
-			throw businessException;		
-		}
+		listeCategories = cm.getListeCategories();
+
 
 		return listeCategories;
 	}
 	
 	public List<Utilisateur> selectionnerTousLesUtilisateurs() throws BusinessException {
-		BusinessException businessException = new BusinessException();
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		UtilisateurManager um = UtilisateurManager.getInstance();
-		try {
-			utilisateurs = um.getListeUtilisateurs();
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			businessException.ajouterErreur(CodesResultatServlets.SELECTION_DES_UTILISATEURS_ERREUR);
-			throw businessException;
-		}
+		utilisateurs = um.getListeUtilisateurs();
 		return utilisateurs;
 	}
 

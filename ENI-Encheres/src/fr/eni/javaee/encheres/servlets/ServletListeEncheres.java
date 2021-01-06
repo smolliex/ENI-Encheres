@@ -46,11 +46,13 @@ public class ServletListeEncheres extends HttpServlet {
 		
 		try {				
 			if (cookies != null && session.getAttribute("liste") != null && request.getParameter("reset") == null) {	
-
+				
+				// Récupération de la liste résultant d'une recherche
 				List<ArticleVendu> listeAvecParametres = new ArrayList<ArticleVendu>();	
 				listeAvecParametres = (List<ArticleVendu>) session.getAttribute("liste");
 				request.setAttribute("liste", listeAvecParametres);
-	
+				
+				// Récupération de cookies à afficher dans la jsp
 				for (Cookie cookie:cookies) {
 					if(cookie.getName().equals("choix")) {
 						request.setAttribute("choixUtilisateur", cookie.getValue());

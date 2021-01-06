@@ -184,7 +184,12 @@
 										">
 										${enchere.nom_article}</a></h3>
 										<!--Text-->
+										<c:if test="${enchere.prix_initial > enchere.prix_vente}">
 										<p class="card-text">Prix: ${enchere.prix_initial}</p>
+										</c:if>
+										<c:if test="${enchere.prix_vente > enchere.prix_initial}">
+										<p class="card-text">Prix: ${enchere.prix_vente}</p>
+										</c:if>
 										<p class="card-text">Fin de l'enchère: ${enchere.date_fin_encheres}</p>
 										<p class="card-text">Vendeur : <a href="">${enchere.vendeur.pseudo}</a></p>    
 									</div>			

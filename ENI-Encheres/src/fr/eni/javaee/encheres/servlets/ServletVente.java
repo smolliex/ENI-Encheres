@@ -55,7 +55,7 @@ public class ServletVente extends HttpServlet {
 				
 			if(no_article>0)
 			{
-				// charge l'article 
+				// charge l'article
 				ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
 				ArticleVendu articleVendu = articleVenduManager.getArticleVendu(no_article);
 				if(articleVendu==null) {

@@ -69,7 +69,6 @@ public class ServletVente extends HttpServlet {
 					//charge la liste des encheres
 					EnchereManager enchereManager = EnchereManager.getInstance();
 					List<Enchere> listeEnchere = enchereManager.getListeEncheres(no_article);
-					System.out.println(listeEnchere);
 					request.setAttribute("listeEnchere", listeEnchere);
 				}
 				

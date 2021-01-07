@@ -43,66 +43,67 @@
 				</div>
 			</c:if>
 		</div>
-		
-		<!-- Titre de la page -->
-		<div class="row text-center">
-			<div class="col">
-				<h1 class="my-5">Administration de ENI-Enchères</h1> 
+		<div class=container>	
+			<!-- Titre de la page -->
+			<div class="row text-center">
+				<div class="col">
+					<h1 class="my-5">Administration de ENI-Enchères</h1> 
+				</div>
 			</div>
-		</div>
-		
-		<!-- Liste des catégories -->
-		<h2>Liste des catégories</h2>
-		<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationDesCategories?action=creer">Créer une nouvelle catégorie</a>
-		<table class="table">
-		  <thead>
-		    <tr>
-		      <th scope="col">Numéro</th>
-		      <th scope="col">Libellé</th>
-		      <th scope="col">Actions</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-			<c:if test="${!empty listeCategories}">
-				<c:forEach var="categorie" items="${listeCategories}">
+			
+			<!-- Liste des catégories -->
+			<h2>Liste des catégories</h2>
+			<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationDesCategories?action=creer">Créer une nouvelle catégorie</a>
+			<table class="table table-dark">
+			  <thead>
 			    <tr>
-			      <th scope="col">${categorie.no_categorie}</th>
-			      <th scope="col">${categorie.libelle}</th>
-			      <th scope="col">
-			      	<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationDesCategories?action=modifier&categorie=${categorie.no_categorie}">Modifier</a>
-			      	<a class="navbar-brand" href="<%=request.getContextPath()%>/SupprimerCategorie?categorie=${categorie.no_categorie}">Supprimer</a>
-			      </th>
-			    </tr>						
-				</c:forEach>
-			</c:if>
-		  </tbody>
-		</table>
-		<!-- Liste des utilisateurs -->
-		<h2>Liste des utilisateurs</h2>
-		<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationCreerUtilisateur">Créer un nouvel utilisateur</a>
-		<table class="table">
-		  <thead>
-			<tr>
-				<th scope="col">Numéro</th>
-				<th scope="col">Nom Prénom</th>
-				<th scope="col">Actions</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			<c:if test="${!empty listeCategories}">
-				<c:forEach var="utilisateur" items="${listeUtilisateurs}">
+			      <th scope="col">Numéro</th>
+			      <th scope="col">Libellé</th>
+			      <th scope="col">Actions</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+				<c:if test="${!empty listeCategories}">
+					<c:forEach var="categorie" items="${listeCategories}">
+				    <tr>
+				      <th scope="col">${categorie.no_categorie}</th>
+				      <th scope="col">${categorie.libelle}</th>
+				      <th scope="col">
+				      	<a class="navbar-brand text-light" href="<%=request.getContextPath()%>/AdministrationDesCategories?action=modifier&categorie=${categorie.no_categorie}">Modifier</a>
+				      	<a class="navbar-brand text-danger" href="<%=request.getContextPath()%>/SupprimerCategorie?categorie=${categorie.no_categorie}">Supprimer</a>
+				      </th>
+				    </tr>						
+					</c:forEach>
+				</c:if>
+			  </tbody>
+			</table>
+			<!-- Liste des utilisateurs -->
+			<h2>Liste des utilisateurs</h2>
+			<a class="navbar-brand" href="<%=request.getContextPath()%>/AdministrationCreerUtilisateur">Créer un nouvel utilisateur</a>
+			<table class="table table-dark">
+			  <thead>
 				<tr>
-					<th scope="col">${utilisateur.no_utilisateur}</th>
-					<th scope="col">${utilisateur.nom}   ${utilisateur.prenom}</th>
-					<th scope="col">
-					<a class="navbar-brand" href="<%=request.getContextPath()%>">Désactiver</a>
-					<a class="navbar-brand" href="<%=request.getContextPath()%>//AdministrationUtilisateurSupprimer?utilisateur=${utilisateur.no_utilisateur}">Supprimer</a>
-					</th>
-				</tr>						
-				</c:forEach>
-			</c:if>
-		  </tbody>
-		</table>
+					<th scope="col">Numéro</th>
+					<th scope="col">Nom Prénom</th>
+					<th scope="col">Actions</th>
+				</tr>
+			  </thead>
+			  <tbody>
+				<c:if test="${!empty listeCategories}">
+					<c:forEach var="utilisateur" items="${listeUtilisateurs}">
+					<tr>
+						<th scope="col">${utilisateur.no_utilisateur}</th>
+						<th scope="col">${utilisateur.nom}   ${utilisateur.prenom}</th>
+						<th scope="col">
+						<a class="navbar-brand text-light" href="<%=request.getContextPath()%>">Désactiver</a>
+						<a class="navbar-brand text-danger" href="<%=request.getContextPath()%>//AdministrationUtilisateurSupprimer?utilisateur=${utilisateur.no_utilisateur}">Supprimer</a>
+						</th>
+					</tr>						
+					</c:forEach>
+				</c:if>
+			  </tbody>
+			</table>
+		</div>
 	</main>
 		
 	</body>

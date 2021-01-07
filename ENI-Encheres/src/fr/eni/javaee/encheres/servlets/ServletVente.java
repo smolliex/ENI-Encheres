@@ -310,7 +310,7 @@ public class ServletVente extends HttpServlet {
 	
 	private Retrait recupererSaisieRetrait(HttpServletRequest request, List<Integer> listeCodesErreur) {
 		
-		//recupere les parametres du formulaire 
+		//recupere les parametres du formulaire
 		String rue = lireParametreString(request, "rue", listeCodesErreur);
 		String code_postal = lireParametreString(request, "code_postal", listeCodesErreur);
 		String ville = lireParametreString(request, "ville", listeCodesErreur);

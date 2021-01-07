@@ -60,7 +60,10 @@
 			<form class="row mx-md-5" action="<%=request.getContextPath()%>/ListeEncheres" method="post">
 				<div class="col-12 col-md-6 px-md-5">
 					<c:if test="${!empty sessionScope.utilisateur}">
-					<p>L'utilisateur est ${ sessionScope.utilisateur.prenom } ${ sessionScope.utilisateur.nom } : n° ${ sessionScope.utilisateur.no_utilisateur }!</p>
+					<p>${ sessionScope.utilisateur.prenom } ${ sessionScope.utilisateur.nom } : vous êtes connecté!</p>
+					</c:if>
+					<c:if test="${empty sessionScope.utilisateur}">
+					<p>Vous êtes déconnecté! Vous pouvez identifier ou vous inscrire en cliquant sur le lien correspondant dans la barre de navigation</p>
 					</c:if>
 					<h2 class="my-3">Filtres :</h2>
 					<div class="input-group flex-nowrap">
@@ -191,7 +194,7 @@
 										<p class="card-text">Prix: ${enchere.prix_vente}</p>
 										</c:if>
 										<p class="card-text">Fin de l'enchère: ${enchere.date_fin_encheres}</p>
-										<p class="card-text">Vendeur : <a href="">${enchere.vendeur.pseudo}</a></p>    
+										<p class="card-text">Vendeur : <a href="<%=request.getContextPath()%>/profil?user=${enchere.vendeur.no_utilisateur}">${enchere.vendeur.pseudo}</a></p>    
 									</div>			
 								</div>
 							</div>

@@ -67,11 +67,19 @@ public class ServletAdministrationCategorieSupprimer extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 
+	/**
+	 * @param int categorie
+	 * @throws BusinessException
+	 */
 	public void supprimerUneCategorie(int categorie) throws BusinessException{
 		CategorieManager cm = CategorieManager.getInstance();
 		cm.deleteCategorie(categorie);
 	}
 	
+	/**
+	 * @return List<Categorie> listeCategories
+	 * @throws BusinessException
+	 */
 	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();
@@ -81,6 +89,10 @@ public class ServletAdministrationCategorieSupprimer extends HttpServlet {
 		return listeCategories;
 	}
 	
+	/**
+	 * @return List<Utilisateur>
+	 * @throws BusinessException
+	 */
 	public List<Utilisateur> selectionnerTousLesUtilisateurs() throws BusinessException {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		UtilisateurManager um = UtilisateurManager.getInstance();

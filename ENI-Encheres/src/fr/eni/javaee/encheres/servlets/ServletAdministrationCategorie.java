@@ -132,11 +132,20 @@ public class ServletAdministrationCategorie extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 
+	/**
+	 * @param int categorie
+	 * @throws BusinessException
+	 */
 	public void creerCategorie(Categorie categorie) throws BusinessException{
 		CategorieManager cm = CategorieManager.getInstance();
 		cm.createCategorie(categorie);
 	}
 	
+	/**
+	 * @param int noCategorie
+	 * @return Categorie categorie
+	 * @throws BusinessException
+	 */
 	public Categorie selectionnerUneCategorie(int noCategorie) throws BusinessException{
 		Categorie categorie = null;	
 		CategorieManager cm = CategorieManager.getInstance();
@@ -144,11 +153,19 @@ public class ServletAdministrationCategorie extends HttpServlet {
 		return categorie;
 	}
 	
+	/**
+	 * @param int categorie
+	 * @throws BusinessException
+	 */
 	public void updateCategorie(Categorie categorie) throws BusinessException{
 		CategorieManager cm = CategorieManager.getInstance();
 		cm.updateCategorie(categorie);
 	}
 	
+	/**
+	 * @return List<Categorie> listeCategories
+	 * @throws BusinessException
+	 */
 	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();
@@ -156,6 +173,10 @@ public class ServletAdministrationCategorie extends HttpServlet {
 		return listeCategories;
 	}
 	
+	/**
+	 * @return List<Utilisateur> utilisateurs
+	 * @throws BusinessException
+	 */
 	public List<Utilisateur> selectionnerTousLesUtilisateurs() throws BusinessException {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		UtilisateurManager um = UtilisateurManager.getInstance();

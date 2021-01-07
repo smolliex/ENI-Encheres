@@ -65,6 +65,10 @@ public class ServletAdministration extends HttpServlet {
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
+	/**
+	 * @return List<Categorie> listeCategories
+	 * @throws BusinessException
+	 */
 	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();
@@ -72,6 +76,10 @@ public class ServletAdministration extends HttpServlet {
 		return listeCategories;
 	}
 	
+	/**
+	 * @return List<Utilisateur> utilisateurs
+	 * @throws BusinessException
+	 */
 	public List<Utilisateur> selectionnerTousLesUtilisateurs() throws BusinessException {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		UtilisateurManager um = UtilisateurManager.getInstance();

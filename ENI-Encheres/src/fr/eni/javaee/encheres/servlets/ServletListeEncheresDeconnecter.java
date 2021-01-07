@@ -76,6 +76,10 @@ public class ServletListeEncheresDeconnecter extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 	
+	/**
+	 * @return List<Categorie> listeCategories
+	 * @throws BusinessException
+	 */
 	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();	
@@ -85,6 +89,12 @@ public class ServletListeEncheresDeconnecter extends HttpServlet {
 	return listeCategories;
 	}
 	
+	/**
+	 * @param int noCategorie
+	 * @param String nomArticle
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerToutesLesEncheresEnCours(int noCategorie,String nomArticle) throws BusinessException{
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();

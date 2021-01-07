@@ -34,6 +34,7 @@ import fr.eni.javaee.encheres.messages.LecteurMessage;
 /**
  * Servlet implementation class ServletArticle
  */
+
 @WebServlet("/vente")
 
 public class ServletVente extends HttpServlet {

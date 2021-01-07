@@ -66,11 +66,19 @@ public class ServletAdministrationUtilisateurSupprimer extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 
+	/**
+	 * @param int utilisateur
+	 * @throws BusinessException
+	 */
 	public void supprimerUnUtilisateur(int utilisateur) throws BusinessException{	
 		UtilisateurManager um = UtilisateurManager.getInstance();
 		um.supprimerUtilisateur(utilisateur);
 	}
 	
+	/**
+	 * @return List<Categorie> listeCategories
+	 * @throws BusinessException
+	 */
 	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();
@@ -78,6 +86,10 @@ public class ServletAdministrationUtilisateurSupprimer extends HttpServlet {
 		return listeCategories;
 	}
 	
+	/**
+	 * @return List<Utilisateur> utilisateurs
+	 * @throws BusinessException
+	 */
 	public List<Utilisateur> selectionnerTousLesUtilisateurs() throws BusinessException {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		UtilisateurManager um = UtilisateurManager.getInstance();

@@ -166,14 +166,14 @@ public class ServletListeEncheres extends HttpServlet {
 					categorieCookie.setMaxAge(Integer.MAX_VALUE);
 					response.addCookie(categorieCookie);
 					noCategorie = Integer.parseInt(request.getParameter("categorie"));		
-					//Récupération catégorie choisie
+					// Récupération catégorie choisie
 					if (noCategorie > -1) {
 						Categorie categorieSelectionnee = selectionnerUneCategorie(noCategorie);
 						request.setAttribute("categorieSelectionnee", categorieSelectionnee);
 					}				
 				}
 				
-				//Récupération liste des catégories
+				// Récupération liste des catégories
 				List<Categorie> listeCategories = new ArrayList<Categorie>();
 				listeCategories = selectionnerToutesLesCategories();
 				request.setAttribute("listeCategories", listeCategories);
@@ -280,6 +280,11 @@ public class ServletListeEncheres extends HttpServlet {
 	// Méthodes utilisant les managers
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 
+	
+	/**
+	 * @return List<Categorie> listeCategories
+	 * @throws BusinessException
+	 */
 	public List<Categorie> selectionnerToutesLesCategories() throws BusinessException{
 		List<Categorie> listeCategories = new ArrayList<Categorie>();	
 		CategorieManager cm = CategorieManager.getInstance();
@@ -287,6 +292,11 @@ public class ServletListeEncheres extends HttpServlet {
 		return listeCategories;
 	}
 	
+	/**
+	 * @param int noCategorie
+	 * @return Categorie categorie
+	 * @throws BusinessException
+	 */
 	public Categorie selectionnerUneCategorie(int noCategorie) throws BusinessException{
 		Categorie categorie = null;	
 		CategorieManager cm = CategorieManager.getInstance();
@@ -294,6 +304,12 @@ public class ServletListeEncheres extends HttpServlet {
 		return categorie;
 	}
 	
+	/**
+	 * @param int noCategorie
+	 * @param  String nomArticle
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerToutesLesEncheresEnCours(int noCategorie,String nomArticle) throws BusinessException{
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
@@ -301,6 +317,11 @@ public class ServletListeEncheres extends HttpServlet {
 		return listeArticlesVendus;
 	}
 	
+	/**
+	 * @param int no_utilisateur
+	 * @return Utilisateur utilisateur
+	 * @throws BusinessException
+	 */
 	public Utilisateur selectionnerUnUtilisateur(int no_utilisateur) throws BusinessException {
 		Utilisateur utilisateur = null;
 		UtilisateurManager um = UtilisateurManager.getInstance();
@@ -308,6 +329,13 @@ public class ServletListeEncheres extends HttpServlet {
 		return utilisateur;
 	}
 
+	/**
+	 * @param int no_utilisateur
+	 * @param int no_categorie
+	 * @param String nom_article
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerLesEncheresOuvertesAvecUnUtilisateurConnecte(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
@@ -315,6 +343,13 @@ public class ServletListeEncheres extends HttpServlet {
 		return listeArticlesVendus;
 	}
 	
+	/**
+	 * @param int no_utilisateur
+	 * @param int no_categorie
+	 * @param String nom_article
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerLesEncheresEnCoursDeLUtilisateurConnecte(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
@@ -322,6 +357,13 @@ public class ServletListeEncheres extends HttpServlet {
 		return listeArticlesVendus;
 	}
 	
+	/**
+	 * @param int no_utilisateur
+	 * @param int o_categorie
+	 * @param String nom_article
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerLesEncheresRemporteesParLUtilisateur(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
@@ -329,6 +371,13 @@ public class ServletListeEncheres extends HttpServlet {
 		return listeArticlesVendus;
 	}
 	
+	/**
+	 * @param int no_utilisateur
+	 * @param int no_categorie
+	 * @param String nom_article
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerLesVentesEnCoursDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
@@ -336,6 +385,13 @@ public class ServletListeEncheres extends HttpServlet {
 		return listeArticlesVendus;
 	}
 	
+	/**
+	 * @param int no_utilisateur
+	 * @param int no_categorie
+	 * @param String nom_article
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerLesVentesNonDebuteesDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();
@@ -343,6 +399,14 @@ public class ServletListeEncheres extends HttpServlet {
 		return listeArticlesVendus;
 	}
 	
+	
+	/**
+	 * @param int no_utilisateur
+	 * @param int no_categorie
+	 * @param String nom_article
+	 * @return List<ArticleVendu> listeArticlesVendus
+	 * @throws BusinessException
+	 */
 	public List<ArticleVendu> selectionnerLesVentesTermineesDeLUtilisateur(int no_utilisateur, int no_categorie, String nom_article) throws BusinessException {
 		List<ArticleVendu> listeArticlesVendus = new ArrayList<ArticleVendu>();
 		ArticleVenduManager avm = ArticleVenduManager.getInstance();

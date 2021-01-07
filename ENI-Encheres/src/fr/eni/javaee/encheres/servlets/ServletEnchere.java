@@ -316,7 +316,7 @@ public class ServletEnchere extends HttpServlet {
 		// transmet la liste des erreurs
 		request.setAttribute("ListeLibellesErreurs",ListeLibellesErreurs(listeCodesErreur));
 
-		// affiche la page
+		// affiche la page 
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/enchere.jsp");			
 		rd.forward(request, response);
 	}

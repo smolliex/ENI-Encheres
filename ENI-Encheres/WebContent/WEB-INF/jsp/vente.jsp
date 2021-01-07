@@ -217,7 +217,7 @@
 		</main>
 		
 		<!-- Pied de page -->
-	    <footer">
+	    <footer>
 	    	<p>
 				<%@include file="pied_de_page.jsp" %>
 			</p>

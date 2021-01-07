@@ -10,6 +10,7 @@ public class Retrait implements Serializable{
 	private String rue;
 	private String code_postal;
 	private String ville;
+	private Boolean retire = Boolean.FALSE;
 	
 	public Retrait() {
 	}
@@ -58,6 +59,14 @@ public class Retrait implements Serializable{
 		return serialVersionUID;
 	}
 
+	public Boolean getRetire() {
+		return retire;
+	}
+
+	public void setRetire(Boolean retire) {
+		this.retire = retire;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -69,12 +78,10 @@ public class Retrait implements Serializable{
 		builder.append(code_postal);
 		builder.append(", ville=");
 		builder.append(ville);
+		builder.append(", retire=");
+		builder.append(retire);
 		builder.append("]");
 		return builder.toString();
 	}
 	
-	
-	
-	
-
 }

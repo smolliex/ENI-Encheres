@@ -56,9 +56,11 @@ public class ServletEnchere extends HttpServlet {
 		// Récupère les valeurs du formulaire
 		int no_article = 0;
 		int montant_enchere = 0;
+		int retraitEffectue = 0;
 		
 		no_article = lireParametreInt(request, "no_article", listeCodesErreur);
 		montant_enchere = lireParametreInt(request, "prix_vente", listeCodesErreur);
+		retraitEffectue = lireParametreInt(request, "retraitEffectue", listeCodesErreur);
 
 		// soumet l'enchere
 		if(no_article>0) {
@@ -67,19 +69,47 @@ public class ServletEnchere extends HttpServlet {
 				HttpSession session = request.getSession();
 				Utilisateur encherisseur = (Utilisateur)session.getAttribute("utilisateur");
 				
-				ArticleVendu article = new ArticleVendu();
-				article.setNo_article(no_article);
+				ArticleVenduManager articleVenduManager = ArticleVenduManager.getInstance();
+				ArticleVendu articleVendu = new ArticleVendu();
+				articleVendu = articleVenduManager.getArticleVendu(no_article);
 				
-				LocalDate date_enchere = LocalDate.now(); 
-				
-				Enchere enchere = new Enchere();
-				enchere.setArticle(article);
-				enchere.setEncherisseur(encherisseur);
-				enchere.setDate_enchere(date_enchere);
-				enchere.setMontant_enchere(montant_enchere);
-				
-				EnchereManager enchereManager = EnchereManager.getInstance();
-				enchereManager.createEnchere(enchere);
+				if(articleVendu!=null) {
+					
+					if(retraitEffectue==0) {
+						
+						// enrtegistre l'enchere
+						LocalDate date_enchere = LocalDate.now(); 
+						
+						Enchere enchere = new Enchere();
+						enchere.setArticle(articleVendu);
+						enchere.setEncherisseur(encherisseur);
+						enchere.setDate_enchere(date_enchere);
+						enchere.setMontant_enchere(montant_enchere);
+						
+						EnchereManager enchereManager = EnchereManager.getInstance();
+						enchereManager.createEnchere(enchere);
+						
+						request.setAttribute("confirmation", "Votre enchère a été prise en compte.");
+						
+					}else {
+						
+						// enrtegistre le retrait effectué
+						RetraitManager retraitManager = RetraitManager.getInstance();
+						Retrait retrait = retraitManager.getRetrait(no_article);
+						if (retrait==null) {
+							retrait = new Retrait();
+						}
+						retrait.setRetire(Boolean.TRUE);
+						
+						retraitManager.updateRetrait(retrait);
+						
+						request.setAttribute("confirmation", "Le retrait a été pris en compte.");
+						
+					}
+					
+				}else {
+					
+				}
 				
 			} catch (BusinessException e) {
 				for (int err : e.getListeCodesErreur()) {
@@ -97,7 +127,6 @@ public class ServletEnchere extends HttpServlet {
 		}else {
 			// recharge la page en confirmant l'enchere
 			request.setAttribute("no_article", no_article);
-			request.setAttribute("confirmation", "Votre enchère a été prise en compte.");
 			AfficherPage(request, response, listeCodesErreur);
 		}
 
@@ -178,7 +207,8 @@ public class ServletEnchere extends HttpServlet {
 	}
 
 	private void AfficherPage(HttpServletRequest request, HttpServletResponse response, List<Integer> listeCodesErreur) throws ServletException, IOException {
-		Retrait retrait = null;
+		
+		List<String> listeInfos = new ArrayList<String>();
 		
 		try {
 			
@@ -194,16 +224,30 @@ public class ServletEnchere extends HttpServlet {
 					listeCodesErreur.add(CodesResultatServlets.VENTE_INCONNUE);
 				}
 				
+				// vérifie si enchere possible
+				Boolean modifiable = isModifiable(request, articleVendu, listeCodesErreur);
+				
 				// charge l'adresse de retrait
+				Retrait retrait = null;
 				RetraitManager retraitManager = RetraitManager.getInstance();
 				retrait = retraitManager.getRetrait(articleVendu.getNo_article());
 				
-				// vérifie si enchere possible
-				Boolean modifiable = isModifiable(request, articleVendu, listeCodesErreur);
-						
+				// verifie si retrait effectué
+				Date date = new Date();
+				LocalDate today = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				Boolean isRetraitEffectue = Boolean.TRUE;
+				if(retrait !=null) {
+					if(!retrait.getRetire() && articleVendu.getDate_fin_encheres().isBefore(today)) {
+						isRetraitEffectue = Boolean.FALSE;
+					}
+				}
+				
 				// charge le meilleur enchéreur
-				String encherisseur = "Soyez le premier à enchérir !";
-				String position = null;
+				String encherisseur = null;
+				Boolean soyerLePremier = Boolean.FALSE;
+				Boolean enchereMenee = Boolean.FALSE;
+				Boolean enchereRemportee = Boolean.FALSE;
 				Utilisateur utilisateur = null;
 				
 				EnchereManager enchereManager = EnchereManager.getInstance();
@@ -221,24 +265,41 @@ public class ServletEnchere extends HttpServlet {
 						
 						if(utilisateur.getNo_utilisateur() == meilleurEncherisseur.getNo_utilisateur()) {
 							
-							Date date = new Date();
-							LocalDate today = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-							
 							if(articleVendu.getDate_fin_encheres().isBefore(today)) {
-								position = "Vous avez remporté l'enchère !";
+								enchereRemportee = Boolean.TRUE;
 							}else {
-								position = "Vous menez l'enchère pour le moment...";
+								enchereMenee = Boolean.TRUE;
 							}
 						}
+					}else {
+						soyerLePremier = Boolean.TRUE;
 					}
 					
+				}
+				
+				// genere les messages d'information selon le contexte
+				if(soyerLePremier) {
+					listeInfos.add("Soyez le premier à enchérir !");
+				}
+
+				if(enchereMenee) {
+					listeInfos.add("Vous menez l'enchère pour le moment...");
+				}
+
+				if(enchereRemportee) {
+					listeInfos.add("FELICITATIONS !<br>Vous avez remporté l'enchère.");
+				}
+
+				if(enchereRemportee && !isRetraitEffectue) {
+					listeInfos.add("Vous pouvez maintenant retiré votre article.");
 				}
 				
 				// passe les attributs à la page
 				request.setAttribute("article", articleVendu);
 				request.setAttribute("retrait", retrait);
 				request.setAttribute("encherisseur", encherisseur);
-				request.setAttribute("position", position);
+				request.setAttribute("listeInfos", listeInfos);
+				request.setAttribute("isRetraitEffectue", isRetraitEffectue);
 				request.setAttribute("isModifiable", modifiable);
 				
 			}else

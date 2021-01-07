@@ -20,10 +20,10 @@ public class RetraitDAOJdbcImpl implements RetraitDAO{
 	
 	private static Logger logger = ErrorLogger.getLogger("RetraitDAOJdbcImpl");
 	
-	private static final String SQL_SELECT_BY="SELECT no_article, rue, code_postal, ville FROM RETRAITS WHERE no_article=?;";
-	private static final String SQL_SELECT_ALL="SELECT no_article, rue, code_postal, ville FROM RETRAITS ORDER BY no_article;";
+	private static final String SQL_SELECT_BY="SELECT no_article, rue, code_postal, ville, retire FROM RETRAITS WHERE no_article=?;";
+	private static final String SQL_SELECT_ALL="SELECT no_article, rue, code_postal, ville, retire FROM RETRAITS ORDER BY no_article;";
 	private static final String SQL_INSERT="INSERT INTO RETRAITS (no_article, rue, code_postal, ville) VALUES (?,?,?,?);";
-	private static final String SQL_UPDATE="UPDATE RETRAITS SET rue=?, code_postal=?, ville=? WHERE no_article=?;";
+	private static final String SQL_UPDATE="UPDATE RETRAITS SET rue=?, code_postal=?, ville=?, retire=? WHERE no_article=?;";
 	private static final String SQL_DELETE="DELETE FROM RETRAITS WHERE no_article=?;";
 	
 	@Override
@@ -86,7 +86,8 @@ public class RetraitDAOJdbcImpl implements RetraitDAO{
 			stmt.setString(1, obj.getRue());
 			stmt.setString(2, obj.getCode_postal());
 			stmt.setString(3, obj.getVille());
-			stmt.setInt(4, obj.getArticle().getNo_article());
+			stmt.setBoolean(4, obj.getRetire());
+			stmt.setInt(5, obj.getArticle().getNo_article());
 			stmt.executeUpdate();
 			
 		} catch (NullPointerException e) {
@@ -171,7 +172,8 @@ public class RetraitDAOJdbcImpl implements RetraitDAO{
 			retrait.setRue(rs.getString("rue"));
 			retrait.setCode_postal(rs.getString("code_postal"));
 			retrait.setVille(rs.getString("ville"));
-
+			retrait.setRetire(rs.getBoolean("retire"));
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.severe(e.getMessage());

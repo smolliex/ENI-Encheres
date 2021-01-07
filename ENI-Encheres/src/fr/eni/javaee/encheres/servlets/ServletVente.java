@@ -20,9 +20,11 @@ import javax.servlet.http.HttpSession;
 
 import fr.eni.javaee.encheres.bll.ArticleVenduManager;
 import fr.eni.javaee.encheres.bll.CategorieManager;
+import fr.eni.javaee.encheres.bll.EnchereManager;
 import fr.eni.javaee.encheres.bll.RetraitManager;
 import fr.eni.javaee.encheres.bo.ArticleVendu;
 import fr.eni.javaee.encheres.bo.Categorie;
+import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.bo.Retrait;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.messages.BusinessException;
@@ -64,8 +66,13 @@ public class ServletVente extends HttpServlet {
 					RetraitManager retraitManager = RetraitManager.getInstance();
 					retrait = retraitManager.getRetrait(articleVendu.getNo_article());
 					
+					//charge la liste des encheres
+					EnchereManager enchereManager = EnchereManager.getInstance();
+					List<Enchere> listeEnchere = enchereManager.getListeEncheres(no_article);
+					System.out.println(listeEnchere);
+					request.setAttribute("listeEnchere", listeEnchere);
 				}
-
+				
 				request.setAttribute("isModifiable", isModifiable(articleVendu));
 				request.setAttribute("isAnnulable", isAnnulable(articleVendu));
 				

@@ -64,8 +64,9 @@
 							
 							<div class="row">
 								
-								<!-- image -->
+								<!-- image et enchérisseurs-->
 								<div class="col-md-4">
+								
 									<h3>Photo</h3>
 									<div class="card">
 										<!-- TODO -->
@@ -77,6 +78,35 @@
 											<button type="button" class="btn btn-secondary btn-xs">Upload</button>
 										</c:if>
 									</div>
+																	
+									<h3>Enchères effectuées</h3>
+									<div class="card">
+										<c:if test="${empty listeEnchere}">
+											Aucune enchère pour le moment.
+										</c:if>
+										
+										<c:if test="${!empty listeEnchere}">
+											<table class="table">
+											  <thead>
+											    <tr>
+											      <th scope="col">Date</th>
+											      <th scope="col">Enchérisseur</th>
+											      <th scope="col">Offre</th>
+											    </tr>
+											  </thead>
+											  <tbody>
+												<c:forEach var="e" items="${listeEnchere}">
+											    <tr>
+											      <th scope="col">${e.date_enchere}</th>
+											      <th scope="col">${e.encherisseur.pseudo}</th>
+											      <th scope="col">${e.montant_enchere}</th>
+											    </tr>						
+												</c:forEach>
+											  </tbody>
+											</table>
+										</c:if>
+									</div>
+									
 								</div>
 			
 								<!-- inputs -->

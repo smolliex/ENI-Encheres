@@ -76,17 +76,20 @@
 												<img class="card-img-left img-fluid" src="https://via.placeholder.com/250x150" alt="image">
 											</div>
 										</div>
-										<c:if test="${!empty position}">
+										<c:if test="${!empty listeInfos}">
 											<div class="position">
-												${position}
+												<c:forEach var="i" items="${listeInfos}">
+													${i}<br>
+												</c:forEach>
 											</div>
 										</c:if>
 									</div>
 				
 									<!-- inputs -->
 									<div class="col-md-8">
-															
+										
 										<input type="hidden" id="no_article" name="no_article" value="${article.no_article}">
+										<input type="hidden" id="retraitEffectue" name="retraitEffectue" value="0">
 
 										<div>
 											<h3>${article.nom_article}</h3>
@@ -130,7 +133,7 @@
 												<div>
 													<label class="aligntop">Vendeur :</label>
 													<label>
-														${article.vendeur.pseudo}<br>
+														<a href="${pageContext.request.contextPath}/profil?user=${article.vendeur.no_utilisateur}">${article.vendeur.pseudo}</a><br>
 														${article.vendeur.telephone}
 													</label>
 												</div>		
@@ -146,25 +149,18 @@
 														<button type="submit" class="btn btn-primary btn-md">Enchérir</button>
 													</c:if>
 												</div>
+												
+												<div>
+													<c:if test ="${!isRetraitEffectue}">
+														<hr>
+														<button type="button" class="btn btn-primary btn-md" onclick="ConfirmerRetrait()">Retrait effectué</button>
+													</c:if>
+												</div>
+												
 											</div>
 										</div>
-																																		
 									</div>
-										
-								</div>
-								
-								<!-- bouton -->
-								<div class="row text-center">
-									<div class="col">
-										<p>
-											<!-- 
-											<c:if test ="${isModifiable}">
-												<button type="button" class="btn btn-primary btn-md">Retrait effectué</button>
-											</c:if>
-											-->
-										</p>
-									</div>
-								</div>							
+								</div>					
 							</form>
 						</c:if>
 						<div class="row text-center">
@@ -186,6 +182,14 @@
 
 	    <script src="vendor/jquery/jquery.min.js"></script>
 	    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script>
+			function ConfirmerRetrait(){
+				if (window.confirm("Validez-vous le retrait des produits ?")) {
+					document.getElementById('retraitEffectue').value = "1";
+					document.formSaisie.submit();
+				}
+			}
+		</script>
 		
 	</body>
 	

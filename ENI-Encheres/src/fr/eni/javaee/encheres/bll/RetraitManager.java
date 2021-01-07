@@ -28,8 +28,8 @@ public class RetraitManager {
 		return DAORetrait.selectAll();
 	}
 	
-	public Retrait getRetrait(int no_retrait) throws BusinessException {
-		return DAORetrait.selectById(no_retrait);
+	public Retrait getRetrait(int no_article) throws BusinessException {
+		return DAORetrait.selectById(no_article);
 	}
 	
 	public void createRetrait(Retrait retrait) throws BusinessException {

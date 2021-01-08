@@ -50,10 +50,10 @@
     
      <form name="connexion" method="post" action="Connexion">
     
-            <label for="identifiant" class="label">Identifiant :</label>
+            <label for="identifiant" class="label h5 font-weight-bold">Identifiant :</label>
             <input type="text" class="input" name="identifiant" id="identifiant" <c:if test="${!empty identifiant}">value="${identifiant}"</c:if> required="required"><br><br>
                     
-            <label for="mot_de_passe" class="label">Mot de passe :</label>
+            <label for="mot_de_passe" class="label h5 font-weight-bold">Mot de passe :</label>
             <input type="password" class="input" name="mot_de_passe" id="mot_de_passe" <c:if test="${!empty mot_de_passe}">value="${mot_de_passe}"</c:if> required="required"><br><br>
      
 	<div class="row my-2">

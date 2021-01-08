@@ -36,7 +36,7 @@
 			<c:if test="${!empty listeCodesErreur}">
 				<div class="alert alert-danger" role="alert">
 					<c:forEach var="codeErreur" items="${listeCodesErreur}">
-						${LecteurMessage.getMessageErreur(codeErreur)} <!-- Ne fonctionne pas si la classe LecteurMesasge est abstraite -->
+						${LecteurMessage.getMessageErreur(codeErreur)} 
 					</c:forEach>
 				</div>
 			</c:if>
@@ -63,7 +63,8 @@
 					<p>${ sessionScope.utilisateur.prenom } ${ sessionScope.utilisateur.nom } : vous êtes connecté!</p>
 					</c:if>
 					<c:if test="${empty sessionScope.utilisateur}">
-					<p>Vous êtes déconnecté! Vous pouvez identifier ou vous inscrire en cliquant sur le lien correspondant dans la barre de navigation</p>
+					<p>Vous êtes déconnecté!</p> 
+					<p>Vous pouvez vous identifier ou vous inscrire en cliquant sur le lien correspondant dans la barre de navigation</p>
 					</c:if>
 					<h2 class="my-3">Filtres :</h2>
 					<div class="input-group flex-nowrap">

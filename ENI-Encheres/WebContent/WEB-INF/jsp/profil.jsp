@@ -50,6 +50,10 @@
 					<span class="h5">${user.nom}</span>
 				</div>
 				<div class="col-12 my-2">
+					<span class="h4 font-weight-bold">Prénom : </span>
+					<span class="h5">${user.prenom}</span>
+				</div>
+				<div class="col-12 my-2">
 					<span class="h4 font-weight-bold">Email : </span>
 					<span class="h5">${user.email}</span>
 				</div>
